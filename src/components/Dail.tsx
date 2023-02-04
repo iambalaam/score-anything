@@ -1,9 +1,13 @@
-import * as React from 'react';
+import * as React from "react";
 
 const Dial = () => {
-  return <div>
-    Dial
-  </div>;
+	return (
+		<>
+			<div className="dial">
+				<div className="dial-cover" />
+			</div>
+		</>
+	);
 };
 
 export default Dial;
