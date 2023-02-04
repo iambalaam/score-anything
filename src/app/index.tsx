@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import Dial from "./components/Dail";
 import "./index.css";
 
-function App() {
+export function App() {
 	return (
 		<>
 			<h1>Score Anything</h1>
