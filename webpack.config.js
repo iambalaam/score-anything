@@ -3,7 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
+    devtool: 'inline-source-map',
+    devServer: {
+        static: './dist',
+    },
 
     output: {
         filename: '[name].bundle.js',
@@ -12,7 +16,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.tsx', '.ts']
+        extensions: ['.tsx', '.ts', '.js']
     },
 
     module: {
