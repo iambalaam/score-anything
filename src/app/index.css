@@ -5,9 +5,28 @@ h1 {
 .dial {
 	width: 500px;
 	height: 500px;
-	border-radius: 100%;
+	border-radius: 50%;
 	position: relative;
 	background: conic-gradient(hsl(360, 100%, 50%), hsl(360, 100%, 75%));
+}
+
+.dial::before {
+	content: "";
+	color: white;
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	background-color: hsl(360, 100%, 75%);
+}
+.dial::after {
+	content: "";
+	color: white;
+	border-radius: 50%;
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	background-color: hsl(360, 100%, 50%);
 }
 
 .dial-cover {
@@ -16,7 +35,6 @@ h1 {
 	border-radius: 100%;
 	background-color: black;
 	position: absolute;
-
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
