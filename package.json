@@ -5,8 +5,8 @@
     "node": "^18"
   },
   "scripts": {
-    "webpack": "webpack",
-    "start": "webpack serve --open",
+    "webpack": "webpack --config src/app/webpack.config.js",
+    "start": "webpack serve --config src/app/webpack.config.js --open",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,7 +20,6 @@
   "homepage": "https://github.com/iambalaam/score-anything#readme",
   "description": "",
   "devDependencies": {
-    "@types/node": "^18",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "css-loader": "^6.7.3",

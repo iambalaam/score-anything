@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "lib": [
+            "WebWorker",
+            "ES2015",
+        ]
+    }
+}

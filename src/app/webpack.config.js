@@ -1,6 +1,9 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const ROOT_DIR = resolve(__dirname, '../..');
+const APP_DIR = resolve(ROOT_DIR, 'src/app');
+const BUILD_DIR = resolve(ROOT_DIR, 'dist');
 
 module.exports = {
     mode: 'development',
@@ -8,10 +11,10 @@ module.exports = {
     devServer: {
         static: './dist',
     },
-
+    entry: resolve(APP_DIR, 'index.tsx'),
     output: {
         filename: '[name].bundle.js',
-        path: resolve(__dirname, 'dist'),
+        path: BUILD_DIR,
         clean: true
     },
 
@@ -28,7 +31,7 @@ module.exports = {
             },
             {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
+                use: ['style-loader', 'css-loader'],
             }
         ]
     },
