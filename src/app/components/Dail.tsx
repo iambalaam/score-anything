@@ -1,20 +1,43 @@
 import * as React from "react";
-import './Dial.css';
+import "./Dial.css";
 
 export interface DialProps {
-	angle: number
+	angle: number;
 }
 
 const Dial: React.FunctionComponent<DialProps> = ({ angle }) => {
-	const backgroundColor = 'white';
-	const startColor = 'red';
-	const endColor = 'blue';
-	const conicGradient = `conic-gradient(${backgroundColor} 0deg, ${startColor} 0deg, ${endColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
+	const backgroundColor = "white";
+	const startColor = "red";
+	const endColor = "blue";
+	let conicGradient = `conic-gradient(${backgroundColor} 0deg, ${startColor} 0deg, ${endColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
 
-	const center = 'translate(-50%, -50%)';
-	const toEdge = 'translateY(-200px)';
-	const startSemiCircle = `linear-gradient(90deg, ${startColor} 50%, transparent 50%)`
-	const endSemiCircle = `linear-gradient(90deg, transparent 50%, ${endColor} 50%)`
+	const center = "translate(-50%, -50%)";
+	const toEdge = "translateY(-200px)";
+	let startSemiCircle = `linear-gradient(90deg, ${startColor} 50%, transparent 50%)`;
+	let endSemiCircle = `linear-gradient(90deg, transparent 50%, ${endColor} 50%)`;
+
+	// Wasn't sure of how to 'do the math' inside the template literal, so I did it here instead...
+	const negativeAngle = 360 + angle;
+
+	// If the angle is negative, we need to flip the gradient and the semi-circles
+	if (angle < 0) {
+		conicGradient = `conic-gradient(
+			${backgroundColor} 0deg, 
+			${backgroundColor} ${negativeAngle}deg, 
+			${endColor} ${negativeAngle}deg, 
+			${startColor} 360deg
+			)`;
+		startSemiCircle = `linear-gradient(
+			270deg,
+			${startColor} 50%, 
+			transparent 50%
+			)`;
+		endSemiCircle = `linear-gradient(
+			270deg,
+			transparent 50%,
+			${endColor} 50%
+			)`;
+	}
 
 	return (
 		<div className="dial" style={{ background: conicGradient }}>

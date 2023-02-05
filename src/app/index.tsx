@@ -7,7 +7,7 @@ export function App() {
 	return (
 		<>
 			<h1>Score Anything</h1>
-			<Dial angle={30} />
+			<Dial angle={-100} />
 		</>
 	);
 }
