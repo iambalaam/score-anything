@@ -7,8 +7,8 @@ export interface DialProps {
 
 const Dial: React.FunctionComponent<DialProps> = ({ angle }) => {
 	const backgroundColor = "white";
-	const startColor = "red";
-	const endColor = "blue";
+	const startColor = "#1f4259";
+	const endColor = "#4d96d8";
 	let conicGradient = `conic-gradient(${backgroundColor} 0deg, ${startColor} 0deg, ${endColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
 
 	const center = "translate(-50%, -50%)";
@@ -43,7 +43,7 @@ const Dial: React.FunctionComponent<DialProps> = ({ angle }) => {
 		<div className="dial" style={{ background: conicGradient }}>
 			<div className="dial-cover" />
 			<div className="dial-start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
-			<div className="dial-end" style={{ background: endSemiCircle, transform: `${center} rotate(${angle}deg) ${toEdge}` }}></div>
+			<div className="dial-end" style={{ background: endColor, transform: `${center} rotate(${angle}deg) ${toEdge}` }}></div>
 		</div>
 	);
 };
