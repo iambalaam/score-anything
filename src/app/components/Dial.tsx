@@ -1,11 +1,45 @@
 import * as React from "react";
 import "./Dial.css";
 
-export interface DialProps {
-	angle: number;
-}
+const Dial: React.FunctionComponent<{}> = () => {
+	const dialState = React.useRef({ isDown: false, lastAngle: 0 });
+	const [angle, setAngle] = React.useState(0);
 
-const Dial: React.FunctionComponent<DialProps> = ({ angle }) => {
+	const handleDown = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
+		e.preventDefault();
+		dialState.current.isDown = true;
+	}
+	const handleUp = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
+		e.preventDefault();
+		dialState.current.isDown = false;
+	}
+
+	const handleMouseMove = (e: MouseEvent) => {
+		if (!dialState.current.isDown) return;
+		e.preventDefault();
+
+		const dx = e.clientX - window.innerWidth / 2;
+		const dy = e.clientY - window.innerHeight / 2;
+		let angle = 90 - Math.atan2(-dy, dx) * 180 / Math.PI;
+
+		while (Math.abs(dialState.current.lastAngle - angle) > 180) {
+			angle += dialState.current.lastAngle > angle ? 360 : -360;
+		}
+		setAngle(angle);
+		dialState.current.lastAngle = angle;
+	}
+
+	const cleanupMoveListeners = () => {
+		window.removeEventListener('mousemove', handleMouseMove);
+		window.removeEventListener('mouseup', handleUp);
+	}
+
+	React.useEffect(() => {
+		window.addEventListener('mousemove', handleMouseMove);
+		window.addEventListener('mouseup', handleUp);
+		return cleanupMoveListeners;
+	}, []);
+
 	const backgroundColor = "white";
 	const startColor = "#1f4259";
 	const endColor = "#4d96d8";
@@ -40,11 +74,17 @@ const Dial: React.FunctionComponent<DialProps> = ({ angle }) => {
 	}
 
 	return (
-		<div className="dial" style={{ background: conicGradient }}>
-			<div className="dial-cover" />
-			<div className="dial-start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
-			<div className="dial-end" style={{ background: endColor, transform: `${center} rotate(${angle}deg) ${toEdge}` }}></div>
-		</div>
+		<>
+			<div className="dial" style={{ background: conicGradient }}>
+				<div className="dial-cover" />
+				<div className="dial-start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
+				<div
+					className="dial-end"
+					style={{ background: endColor, transform: `${center} rotate(${angle}deg) ${toEdge}` }}
+					onMouseDown={handleDown}
+				></div>
+			</div>
+		</>
 	);
 };
 

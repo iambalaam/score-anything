@@ -4,22 +4,8 @@ import Dial from "./components/Dial";
 import "./index.css";
 
 export function App() {
-	const [angle, setAngle] = React.useState(0);
-
-	onwheel = (e) => {
-		const y = e.deltaY;
-		if (y > 0) {
-			setAngle(angle + 2);
-		} else {
-			setAngle(angle - 2);
-		}
-	};
-
 	return (
-		<>
-			<h1>Score Anything</h1>
-			<Dial angle={angle} />
-		</>
+		<Dial />
 	);
 }
 
