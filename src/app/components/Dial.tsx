@@ -1,17 +1,82 @@
 import * as React from "react";
 import "./Dial.css";
 
+export function clamp(min: number, max: number, value: number) {
+	if (value > max) return max;
+	if (value < min) return min;
+	return value;
+}
+
+export function conicGradient(degrees: number, baseColor: string, backgroundColor: string): string {
+	const angle = clamp(-360, 360, degrees);
+	if (angle > 0 || Object.is(+0, angle)/* we differentiate ±0 */) {
+		// forwards
+		return `conic-gradient(${backgroundColor} 0deg, ${baseColor} 0deg, ${baseColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
+	} else {
+		// backwards
+		const backAngle = angle + 360;
+		return `conic-gradient(${backgroundColor} ${backAngle}deg, ${baseColor} ${backAngle}deg, ${baseColor} 360deg, ${backgroundColor} 360deg)`;
+	}
+}
+
+function animate(
+	time: number,
+	callback: (t01: number) => void,
+	easing: (x: number) => number = (x) => x // linear
+) {
+	let lastTimestamp = 0;
+	let cumMs = 0
+
+	function loop(timestamp: DOMHighResTimeStamp) {
+		if (lastTimestamp == 0) {
+			lastTimestamp = timestamp;
+			return requestAnimationFrame(loop);
+		}
+
+		const ms = timestamp - lastTimestamp;
+		cumMs += ms;
+		const t01 = Math.min(cumMs / time, 1);
+		const tEval = easing(t01);
+
+		callback(tEval);
+
+		if (cumMs > time) return;
+		lastTimestamp = timestamp;
+		requestAnimationFrame(loop);
+	}
+	loop(0);
+}
+
+
 const Dial: React.FunctionComponent<{}> = () => {
-	const dialState = React.useRef({ isDown: false, lastAngle: 0 });
+	const dialState = React.useRef({ isDown: false, lastAngle: 0, enabled: true });
 	const [angle, setAngle] = React.useState(0);
 
 	const handleDown = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		e.preventDefault();
-		dialState.current.isDown = true;
+		if (dialState.current.enabled) {
+			dialState.current.isDown = true;
+		}
 	}
 	const handleUp = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		e.preventDefault();
+		if (!dialState.current.isDown) return;
+
 		dialState.current.isDown = false;
+		dialState.current.enabled = false;
+
+		animate(
+			1200,
+			(t01) => {
+				const newAngle = dialState.current.lastAngle * (1 - t01);
+				setAngle(newAngle);
+				if (t01 > 0.999) {
+					dialState.current.enabled = true;
+					dialState.current.lastAngle = 0;
+				}
+			},
+			(x) => 1 - Math.pow((x - 1), 4)
+		)
 	}
 
 	const handleMouseMove = (e: MouseEvent) => {
@@ -43,39 +108,16 @@ const Dial: React.FunctionComponent<{}> = () => {
 	const backgroundColor = "white";
 	const startColor = "#1f4259";
 	const endColor = "#4d96d8";
-	let conicGradient = `conic-gradient(${backgroundColor} 0deg, ${startColor} 0deg, ${endColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
 
 	const center = "translate(-50%, -50%)";
 	const toEdge = "translateY(-200px)";
-	let startSemiCircle = `linear-gradient(90deg, ${startColor} 50%, transparent 50%)`;
-	let endSemiCircle = `linear-gradient(90deg, transparent 50%, ${endColor} 50%)`;
-
-	// Wasn't sure of how to 'do the math' inside the template literal, so I did it here instead...
-	const negativeAngle = 360 + angle;
-
-	// If the angle is negative, we need to flip the gradient and the semi-circles
-	if (angle < 0) {
-		conicGradient = `conic-gradient(
-			${backgroundColor} 0deg, 
-			${backgroundColor} ${negativeAngle}deg, 
-			${endColor} ${negativeAngle}deg, 
-			${startColor} 360deg
-			)`;
-		startSemiCircle = `linear-gradient(
-			270deg,
-			${startColor} 50%, 
-			transparent 50%
-			)`;
-		endSemiCircle = `linear-gradient(
-			270deg,
-			transparent 50%,
-			${endColor} 50%
-			)`;
-	}
+	let startSemiCircle = angle > 0
+		? `linear-gradient(90deg, ${startColor} 50%, transparent 50%)`
+		: `linear-gradient(270deg, ${startColor} 50%, transparent 50% )`;
 
 	return (
 		<>
-			<div className="dial" style={{ background: conicGradient }}>
+			<div className="dial" style={{ background: conicGradient(angle, endColor, backgroundColor) }}>
 				<div className="dial-cover" />
 				<div className="dial-start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
 				<div
