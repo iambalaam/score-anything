@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Color, darken, HSL } from "../util/color";
 import "./Dial.css";
 
 export function clamp(min: number, max: number, value: number) {
@@ -7,15 +8,16 @@ export function clamp(min: number, max: number, value: number) {
 	return value;
 }
 
-export function conicGradient(degrees: number, baseColor: string, backgroundColor: string): string {
+
+export function conicGradient(degrees: number, baseColor: Color, backgroundColor: Color): string {
 	const angle = clamp(-360, 360, degrees);
 	if (angle > 0 || Object.is(+0, angle)/* we differentiate ±0 */) {
 		// forwards
-		return `conic-gradient(${backgroundColor} 0deg, ${baseColor} 0deg, ${baseColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
+		return `conic-gradient(${backgroundColor} 0deg, ${darken(baseColor, angle)} 0deg, ${baseColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
 	} else {
 		// backwards
 		const backAngle = angle + 360;
-		return `conic-gradient(${backgroundColor} ${backAngle}deg, ${baseColor} ${backAngle}deg, ${baseColor} 360deg, ${backgroundColor} 360deg)`;
+		return `conic-gradient(${backgroundColor} ${backAngle}deg, ${baseColor} ${backAngle}deg, ${darken(baseColor, angle)} 360deg, ${backgroundColor} 360deg)`;
 	}
 }
 
@@ -46,7 +48,6 @@ function animate(
 	}
 	loop(0);
 }
-
 
 const Dial: React.FunctionComponent<{}> = () => {
 	const dialState = React.useRef({ isDown: false, lastAngle: 0, enabled: true });
@@ -94,35 +95,38 @@ const Dial: React.FunctionComponent<{}> = () => {
 		dialState.current.lastAngle = angle;
 	}
 
-	const cleanupMoveListeners = () => {
+
+	function setupEventListeners() {
+		window.addEventListener('mousemove', handleMouseMove);
+		window.addEventListener('mouseup', handleUp);
+	}
+	function cleanupEventListeners() {
 		window.removeEventListener('mousemove', handleMouseMove);
 		window.removeEventListener('mouseup', handleUp);
 	}
-
 	React.useEffect(() => {
-		window.addEventListener('mousemove', handleMouseMove);
-		window.addEventListener('mouseup', handleUp);
-		return cleanupMoveListeners;
+		setupEventListeners();
+		return cleanupEventListeners;
 	}, []);
 
 	const backgroundColor = "white";
-	const startColor = "#1f4259";
-	const endColor = "#4d96d8";
+	// const color = new HSL(208, 64, 57);
+	const color = new HSL(0, 53, 58);
 
 	const center = "translate(-50%, -50%)";
 	const toEdge = "translateY(-200px)";
 	let startSemiCircle = angle > 0
-		? `linear-gradient(90deg, ${startColor} 50%, transparent 50%)`
-		: `linear-gradient(270deg, ${startColor} 50%, transparent 50% )`;
+		? `linear-gradient(90deg, ${darken(color, angle)} 50%, transparent 50%)`
+		: `linear-gradient(270deg, ${darken(color, angle)} 50%, transparent 50% )`;
 
 	return (
 		<>
-			<div className="dial" style={{ background: conicGradient(angle, endColor, backgroundColor) }}>
+			<div className="dial" style={{ background: conicGradient(angle, color, backgroundColor) }}>
 				<div className="dial-cover" />
 				<div className="dial-start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
 				<div
 					className="dial-end"
-					style={{ background: endColor, transform: `${center} rotate(${angle}deg) ${toEdge}` }}
+					style={{ background: color.toString(), transform: `${center} rotate(${angle}deg) ${toEdge}` }}
 					onMouseDown={handleDown}
 				></div>
 			</div>
