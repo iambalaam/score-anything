@@ -139,14 +139,21 @@ const Dial: React.FunctionComponent<{}> = () => {
 		? `linear-gradient(90deg, ${darken(color, angle)} 50%, transparent 50%)`
 		: `linear-gradient(270deg, ${darken(color, angle)} 50%, transparent 50% )`;
 
+	const clampedAngle = clamp(-360, 360, angle);
+	const rotate = angle > 360
+		? angle - 360
+		: angle < -360
+			? angle + 360
+			: 0;
+	
 	return (
 		<>
-			<div className="dial" style={{ background: conicGradient(angle, color, backgroundColor) }}>
+			<div className="dial" style={{ background: conicGradient(angle, color, backgroundColor), transform: `rotateZ(${rotate}deg)` }}>
 				<div className="dial-cover" />
 				<div className="dial-start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
 				<div
 					className="dial-end"
-					style={{ background: color.toString(), transform: `${center} rotate(${angle}deg) ${toEdge}` }}
+					style={{ background: color.toString(), transform: `${center} rotate(${clampedAngle}deg) ${toEdge}` }}
 					onMouseDown={handleDown}
 				></div>
 			</div>
