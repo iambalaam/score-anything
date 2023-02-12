@@ -8,7 +8,6 @@ export function clamp(min: number, max: number, value: number) {
 	return value;
 }
 
-
 export function conicGradient(degrees: number, baseColor: Color, backgroundColor: Color): string {
 	const angle = clamp(-360, 360, degrees);
 	if (angle > 0 || Object.is(+0, angle)/* we differentiate ±0 */) {
@@ -49,14 +48,37 @@ function animate(
 	loop(0);
 }
 
+const RAD_2_DEGS = 180 / Math.PI;
+export function getDegreesFromCenter(x: number, y: number) {
+	const dx = x - window.innerWidth / 2;
+	const dy = y - window.innerHeight / 2;
+	return 90 - Math.atan2(-dy, dx) * RAD_2_DEGS;
+}
+
+export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): [number, number] {
+	if ('clientX' in e) {
+		return [e.clientX, e.clientY];
+	} else {
+		return [e.touches[0].clientX, e.touches[0].clientY];
+	}
+}
+
+export interface DialRef {
+	isDown: boolean,
+	startingAngle: number,
+	lastAngle: number,
+	enabled: boolean,
+}
+
 const Dial: React.FunctionComponent<{}> = () => {
-	const dialState = React.useRef({ isDown: false, lastAngle: 0, enabled: true });
+	const dialState = React.useRef<DialRef>({ isDown: false, lastAngle: 0, enabled: true, startingAngle: 0 });
 	const [angle, setAngle] = React.useState(0);
 
 	const handleDown = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		e.preventDefault();
 		if (dialState.current.enabled) {
 			dialState.current.isDown = true;
+			dialState.current.startingAngle = getDegreesFromCenter(...getEventCoords(e));
 		}
 	}
 	const handleUp = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
@@ -74,6 +96,7 @@ const Dial: React.FunctionComponent<{}> = () => {
 				if (t01 > 0.999) {
 					dialState.current.enabled = true;
 					dialState.current.lastAngle = 0;
+					setAngle(0);
 				}
 			},
 			(x) => 1 - Math.pow((x - 1), 4)
@@ -84,13 +107,11 @@ const Dial: React.FunctionComponent<{}> = () => {
 		if (!dialState.current.isDown) return;
 		e.preventDefault();
 
-		const dx = e.clientX - window.innerWidth / 2;
-		const dy = e.clientY - window.innerHeight / 2;
-		let angle = 90 - Math.atan2(-dy, dx) * 180 / Math.PI;
-
+		let angle = getDegreesFromCenter(e.clientX, e.clientY) - dialState.current.startingAngle;
 		while (Math.abs(dialState.current.lastAngle - angle) > 180) {
 			angle += dialState.current.lastAngle > angle ? 360 : -360;
 		}
+
 		setAngle(angle);
 		dialState.current.lastAngle = angle;
 	}
@@ -110,7 +131,6 @@ const Dial: React.FunctionComponent<{}> = () => {
 	}, []);
 
 	const backgroundColor = "white";
-	// const color = new HSL(208, 64, 57);
 	const color = new HSL(0, 53, 58);
 
 	const center = "translate(-50%, -50%)";
