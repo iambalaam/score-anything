@@ -1,12 +1,8 @@
 import * as React from "react";
+import { animate } from "../util/animate";
 import { Color, darken, HSL } from "../util/color";
+import { getDegreesFromCenter, clamp } from "../util/math";
 import "./Dial.css";
-
-export function clamp(min: number, max: number, value: number) {
-	if (value > max) return max;
-	if (value < min) return min;
-	return value;
-}
 
 export function conicGradient(degrees: number, baseColor: Color, backgroundColor: Color): string {
 	const angle = clamp(-360, 360, degrees);
@@ -18,41 +14,6 @@ export function conicGradient(degrees: number, baseColor: Color, backgroundColor
 		const backAngle = angle + 360;
 		return `conic-gradient(${backgroundColor} ${backAngle}deg, ${baseColor} ${backAngle}deg, ${darken(baseColor, angle)} 360deg, ${backgroundColor} 360deg)`;
 	}
-}
-
-function animate(
-	time: number,
-	callback: (t01: number) => void,
-	easing: (x: number) => number = (x) => x // linear
-) {
-	let lastTimestamp = 0;
-	let cumMs = 0
-
-	function loop(timestamp: DOMHighResTimeStamp) {
-		if (lastTimestamp == 0) {
-			lastTimestamp = timestamp;
-			return requestAnimationFrame(loop);
-		}
-
-		const ms = timestamp - lastTimestamp;
-		cumMs += ms;
-		const t01 = Math.min(cumMs / time, 1);
-		const tEval = easing(t01);
-
-		callback(tEval);
-
-		if (cumMs > time) return;
-		lastTimestamp = timestamp;
-		requestAnimationFrame(loop);
-	}
-	loop(0);
-}
-
-const RAD_2_DEGS = 180 / Math.PI;
-export function getDegreesFromCenter(x: number, y: number) {
-	const dx = x - window.innerWidth / 2;
-	const dy = y - window.innerHeight / 2;
-	return 90 - Math.atan2(-dy, dx) * RAD_2_DEGS;
 }
 
 export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): [number, number] {
@@ -145,7 +106,7 @@ const Dial: React.FunctionComponent<{}> = () => {
 		: angle < -360
 			? angle + 360
 			: 0;
-	
+
 	return (
 		<>
 			<div className="dial" style={{ background: conicGradient(angle, color, backgroundColor), transform: `rotateZ(${rotate}deg)` }}>
