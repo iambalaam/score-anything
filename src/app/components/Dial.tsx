@@ -24,14 +24,57 @@ export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | R
 	}
 }
 
+const COUNTER_BLUR_Z = 100;
+const COUNTER_FOCUS_Z = 101;
+const COUNTER_END_Z = 102;
+interface CounterProps {
+	hasFocus: boolean;
+	getFocus: () => void;
+	color: Color;
+	backgroundColor: Color;
+	angle: number;
+	onDown: (e: React.MouseEvent | React.TouchEvent) => void;
+}
+const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, angle, onDown }) => {
+	const clampedAngle = clamp(-360, 360, angle);
+	const center = "translate(-50%, -50%)";
+	const toEdge = "translateY(-200px)";
+	const startSemiCircle = angle > 0
+		? `linear-gradient(90deg, ${darken(color, angle)} 50%, transparent 50%)`
+		: `linear-gradient(270deg, ${darken(color, angle)} 50%, transparent 50% )`;
+	const extraAngle = angle > 360
+		? angle - 360
+		: angle < -360
+			? angle + 360
+			: 0;
+
+	return (
+		<div className="counter" style={{
+			background: conicGradient(angle, color, backgroundColor),
+			transform: `rotateZ(${extraAngle}deg)`,
+			zIndex: hasFocus ? COUNTER_FOCUS_Z : COUNTER_BLUR_Z
+		}} >
+			<div className="start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
+			<div
+				className="end"
+				style={{
+					background: color.toString(),
+					transform: `${center} rotate(${clampedAngle}deg) ${toEdge}`,
+					zIndex: hasFocus ? COUNTER_END_Z : COUNTER_BLUR_Z
+				}}
+				onMouseDown={onDown}
+			></div>
+		</div>
+	)
+}
+
 export interface DialRef {
 	isDown: boolean,
 	startingAngle: number,
 	lastAngle: number,
 	enabled: boolean,
 }
-
-const Dial: React.FunctionComponent<{}> = () => {
+export const Dial: React.FC<{}> = () => {
 	const dialState = React.useRef<DialRef>({ isDown: false, lastAngle: 0, enabled: true, startingAngle: 0 });
 	const [angle, setAngle] = React.useState(0);
 
@@ -77,7 +120,6 @@ const Dial: React.FunctionComponent<{}> = () => {
 		dialState.current.lastAngle = angle;
 	}
 
-
 	function setupEventListeners() {
 		window.addEventListener('mousemove', handleMouseMove);
 		window.addEventListener('mouseup', handleUp);
@@ -94,32 +136,10 @@ const Dial: React.FunctionComponent<{}> = () => {
 	const backgroundColor = "white";
 	const color = new HSL(0, 53, 58);
 
-	const center = "translate(-50%, -50%)";
-	const toEdge = "translateY(-200px)";
-	let startSemiCircle = angle > 0
-		? `linear-gradient(90deg, ${darken(color, angle)} 50%, transparent 50%)`
-		: `linear-gradient(270deg, ${darken(color, angle)} 50%, transparent 50% )`;
-
-	const clampedAngle = clamp(-360, 360, angle);
-	const rotate = angle > 360
-		? angle - 360
-		: angle < -360
-			? angle + 360
-			: 0;
-
 	return (
-		<>
-			<div className="dial" style={{ background: conicGradient(angle, color, backgroundColor), transform: `rotateZ(${rotate}deg)` }}>
-				<div className="dial-cover" />
-				<div className="dial-start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
-				<div
-					className="dial-end"
-					style={{ background: color.toString(), transform: `${center} rotate(${clampedAngle}deg) ${toEdge}` }}
-					onMouseDown={handleDown}
-				></div>
-			</div>
-		</>
+		<div className="dial">
+			<Counter hasFocus getFocus={() => { }} onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
+			<div className="dial-cover" />
+		</div>
 	);
 };
-
-export default Dial;

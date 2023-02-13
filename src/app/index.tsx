@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import Dial from "./components/Dial";
+import { Dial } from "./components/Dial";
 import "./index.css";
 
 export function App() {
