@@ -8,10 +8,10 @@ export class HSL {
     }
 }
 
-const COLOR_SHIFT = 2;
+const COLOR_SHIFT = 1;
 const DARKER = 4;
 export function darken(color: Color, angle = 30) {
-    const shades = Math.log(Math.min(Math.abs(angle), 30));
+    const shades = Math.log(Math.max(Math.abs(angle), 1));
     if (color instanceof HSL) {
         return new HSL(color.h + COLOR_SHIFT * shades, color.s, color.l - DARKER * shades);
     }

@@ -68,6 +68,8 @@ const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, ang
 	)
 }
 
+const DEGREES2POINTS = 30;
+
 export interface DialRef {
 	isDown: boolean,
 	startingAngle: number,
@@ -76,7 +78,9 @@ export interface DialRef {
 }
 export const Dial: React.FC<{}> = () => {
 	const dialState = React.useRef<DialRef>({ isDown: false, lastAngle: 0, enabled: true, startingAngle: 0 });
+
 	const [angle, setAngle] = React.useState(0);
+	const [points, setPoints] = React.useState(0);
 
 	const handleDown = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		e.preventDefault();
@@ -117,6 +121,7 @@ export const Dial: React.FC<{}> = () => {
 		}
 
 		setAngle(angle);
+		setPoints((angle / DEGREES2POINTS));
 		dialState.current.lastAngle = angle;
 	}
 
@@ -139,7 +144,9 @@ export const Dial: React.FC<{}> = () => {
 	return (
 		<div className="dial">
 			<Counter hasFocus getFocus={() => { }} onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
-			<div className="dial-cover" />
+			<div className="dial-cover" style={{ color: color.toString() }}>
+				{dialState.current.isDown && points.toFixed(0)}
+			</div>
 		</div>
 	);
 };

@@ -2,6 +2,7 @@
     width: 500px;
     height: 500px;
     position: relative;
+    font-family: monospace;
 }
 
 .dial-cover {
@@ -14,6 +15,10 @@
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 200;
+    text-align: center;
+    display: grid;
+    align-items: center;
+    font-size: 100px;
 }
 
 .counter {
