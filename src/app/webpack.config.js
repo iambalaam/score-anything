@@ -6,7 +6,7 @@ const APP_DIR = resolve(ROOT_DIR, 'src/app');
 const BUILD_DIR = resolve(ROOT_DIR, 'dist');
 
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     devtool: 'inline-source-map',
     devServer: {
         static: './dist',

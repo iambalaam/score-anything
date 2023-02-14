@@ -5,6 +5,9 @@ on:
     branches: [main, debug-actions]
   pull_request:
     branches: [main]
+    
+permissions:
+  contents: write
 
 jobs:
   release:
@@ -28,3 +31,8 @@ jobs:
 
       - name: Build 🏗️ 
         run: npm run build
+
+      - name: Release 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
