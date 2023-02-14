@@ -1,5 +1,8 @@
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const ROOT_DIR = resolve(__dirname, '../..');
 const APP_DIR = resolve(ROOT_DIR, 'src/app');
@@ -7,7 +10,7 @@ const BUILD_DIR = resolve(ROOT_DIR, 'dist');
 
 module.exports = {
     mode: 'production',
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     devServer: {
         static: './dist',
     },
@@ -31,14 +34,25 @@ module.exports = {
             },
             {
                 test: /\.css$/i,
-                use: ['style-loader', 'css-loader'],
+                use: [MiniCssExtractPlugin.loader, 'css-loader'],
             }
         ]
     },
 
     plugins: [
-        new HtmlWebpackPlugin({
-            title: 'Score Anything'
+        new HtmlWebpackPlugin({ title: 'Score Anything' }),
+        new BundleAnalyzerPlugin({ analyzerMode: 'static', reportFilename: 'bundle-analyzer.html' }),
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[id].css",
         })
-    ]
+    ],
+    optimization: {
+        concatenateModules: false, // Makes BundleAnalyzerPlugin more effective
+
+        minimizer: [
+            `...`,
+            new CssMinimizerPlugin()
+        ]
+    }
 }
