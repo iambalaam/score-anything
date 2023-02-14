@@ -10,3 +10,7 @@ export function clamp(min: number, max: number, value: number) {
     if (value < min) return min;
     return value;
 }
+
+export function toSignedIntString(x: number) {
+    return (x > 0 ? '+' : '') + x.toFixed(0);
+}

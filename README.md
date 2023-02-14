@@ -1,4 +1,4 @@
-# Score Anything
+# [Score Anything](https://iambalaam.github.io/score-anything/)
 
 Welcome! This repository contains the source code for Score Anything, a PWA clone of the iOS app created by Ilya Panchenko. Full credit for the original idea goes to them. The original app is available on the App Store https://apps.apple.com/gb/app/score-anything/id1541777240
 

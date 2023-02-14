@@ -1,7 +1,7 @@
 import * as React from "react";
 import { animate } from "../util/animate";
 import { Color, darken, HSL } from "../util/color";
-import { getDegreesFromCenter, clamp } from "../util/math";
+import { getDegreesFromCenter, clamp, toSignedIntString } from "../util/math";
 import "./Dial.css";
 
 export function conicGradient(degrees: number, baseColor: Color, backgroundColor: Color): string {
@@ -63,6 +63,7 @@ const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, ang
 					zIndex: hasFocus ? COUNTER_END_Z : COUNTER_BLUR_Z
 				}}
 				onMouseDown={onDown}
+				onTouchStart={onDown}
 			></div>
 		</div>
 	)
@@ -111,11 +112,11 @@ export const Dial: React.FC<{}> = () => {
 		)
 	}
 
-	const handleMouseMove = (e: MouseEvent) => {
+	const handleMove = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (!dialState.current.isDown) return;
 		e.preventDefault();
 
-		let angle = getDegreesFromCenter(e.clientX, e.clientY) - dialState.current.startingAngle;
+		let angle = getDegreesFromCenter(...getEventCoords(e)) - dialState.current.startingAngle;
 		while (Math.abs(dialState.current.lastAngle - angle) > 180) {
 			angle += dialState.current.lastAngle > angle ? 360 : -360;
 		}
@@ -126,12 +127,16 @@ export const Dial: React.FC<{}> = () => {
 	}
 
 	function setupEventListeners() {
-		window.addEventListener('mousemove', handleMouseMove);
+		window.addEventListener('mousemove', handleMove);
+		window.addEventListener('touchmove', handleMove);
 		window.addEventListener('mouseup', handleUp);
+		window.addEventListener('touchend', handleUp);
 	}
 	function cleanupEventListeners() {
-		window.removeEventListener('mousemove', handleMouseMove);
+		window.removeEventListener('mousemove', handleMove);
+		window.removeEventListener('touchmove', handleMove);
 		window.removeEventListener('mouseup', handleUp);
+		window.removeEventListener('touchend', handleUp);
 	}
 	React.useEffect(() => {
 		setupEventListeners();
@@ -145,7 +150,7 @@ export const Dial: React.FC<{}> = () => {
 		<div className="dial">
 			<Counter hasFocus getFocus={() => { }} onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
 			<div className="dial-cover" style={{ color: color.toString() }}>
-				{dialState.current.isDown && points.toFixed(0)}
+				{dialState.current.isDown && toSignedIntString(points)}
 			</div>
 		</div>
 	);
