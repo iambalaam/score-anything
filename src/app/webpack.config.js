@@ -51,7 +51,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Score Anything',
             meta: {
-                viewport: {content: 'width=device-width, initial-scale=1, minimum-scale=1'}
+                viewport: { content: 'width=device-width, initial-scale=1, minimum-scale=1' }
             }
         }),
         isProd && new BundleAnalyzerPlugin({

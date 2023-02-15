@@ -38,7 +38,7 @@ interface CounterProps {
 const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, angle, onDown }) => {
 	const clampedAngle = clamp(-360, 360, angle);
 	const center = "translate(-50%, -50%)";
-	const toEdge = "translateY(-200px)";
+	const toEdge = "translateY(-35vmin)";
 	const startSemiCircle = angle > 0
 		? `linear-gradient(90deg, ${darken(color, angle)} 50%, transparent 50%)`
 		: `linear-gradient(270deg, ${darken(color, angle)} 50%, transparent 50% )`;
@@ -91,7 +91,7 @@ export const Dial: React.FC<{}> = () => {
 		}
 	}
 	const handleUp = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
-		e.preventDefault();
+		if (e.cancelable) e.preventDefault();
 		if (!dialState.current.isDown) return;
 
 		dialState.current.isDown = false;
@@ -114,7 +114,7 @@ export const Dial: React.FC<{}> = () => {
 
 	const handleMove = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (!dialState.current.isDown) return;
-		e.preventDefault();
+		if (e.cancelable) e.preventDefault();
 
 		let angle = getDegreesFromCenter(...getEventCoords(e)) - dialState.current.startingAngle;
 		while (Math.abs(dialState.current.lastAngle - angle) > 180) {
@@ -143,7 +143,7 @@ export const Dial: React.FC<{}> = () => {
 		return cleanupEventListeners;
 	}, []);
 
-	const backgroundColor = "white";
+	const backgroundColor = '#eee';
 	const color = new HSL(0, 53, 58);
 
 	return (

@@ -13,8 +13,6 @@ html {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-
-h1 {
-	color: indianred;
+	overflow: hidden;
+	overscroll-behavior-y: contain;
 }
