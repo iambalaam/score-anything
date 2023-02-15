@@ -1,3 +1,4 @@
+const assert = require('assert');
 const { resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -8,9 +9,14 @@ const ROOT_DIR = resolve(__dirname, '../..');
 const APP_DIR = resolve(ROOT_DIR, 'src/app');
 const BUILD_DIR = resolve(ROOT_DIR, 'dist');
 
+const ENVIRONMENTS = ['development', 'production'];
+const env = process.env.NODE_ENV;
+const isProd = env == 'production';
+assert(ENVIRONMENTS.includes(env), `Unknown environment ${env}, expected to be in [${ENVIRONMENTS}]`);
+
 module.exports = {
-    mode: 'production',
-    devtool: 'source-map',
+    mode: env,
+    devtool: isProd ? 'source-map' : 'inline-source-map',
     devServer: {
         static: './dist',
     },
@@ -34,19 +40,30 @@ module.exports = {
             },
             {
                 test: /\.css$/i,
-                use: [MiniCssExtractPlugin.loader, 'css-loader'],
+                use: isProd
+                    ? [MiniCssExtractPlugin.loader, 'css-loader']
+                    : ['style-loader', 'css-loader'],
             }
         ]
     },
 
     plugins: [
-        new HtmlWebpackPlugin({ title: 'Score Anything' }),
-        new BundleAnalyzerPlugin({ analyzerMode: 'static', reportFilename: 'bundle-analyzer.html' }),
-        new MiniCssExtractPlugin({
+        new HtmlWebpackPlugin({
+            title: 'Score Anything',
+            meta: {
+                viewport: {content: 'width=device-width, initial-scale=1, minimum-scale=1'}
+            }
+        }),
+        isProd && new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            reportFilename: 'bundle-analyzer.html',
+            openAnalyzer: false
+        }),
+        isProd && new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css",
         })
-    ],
+    ].filter(Boolean),
     optimization: {
         concatenateModules: false, // Makes BundleAnalyzerPlugin more effective
 
