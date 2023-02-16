@@ -29,7 +29,6 @@ const COUNTER_FOCUS_Z = 101;
 const COUNTER_END_Z = 102;
 interface CounterProps {
 	hasFocus: boolean;
-	getFocus: () => void;
 	color: Color;
 	backgroundColor: Color;
 	angle: number;
@@ -72,19 +71,19 @@ const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, ang
 const DEGREES2POINTS = 30;
 
 export interface DialRef {
+	total: number,
+	prevTotal: number,
 	isDown: boolean,
 	startingAngle: number,
 	lastAngle: number,
 	enabled: boolean,
 }
 export const Dial: React.FC<{}> = () => {
-	const dialState = React.useRef<DialRef>({ isDown: false, lastAngle: 0, enabled: true, startingAngle: 0 });
-
+	const dialState = React.useRef<DialRef>({ total: 0, prevTotal: 0, isDown: false, lastAngle: 0, enabled: true, startingAngle: 0 });
 	const [angle, setAngle] = React.useState(0);
-	const [points, setPoints] = React.useState(0);
 
 	const handleDown = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
-		e.preventDefault();
+		if (e.cancelable) e.preventDefault();
 		if (dialState.current.enabled) {
 			dialState.current.isDown = true;
 			dialState.current.startingAngle = getDegreesFromCenter(...getEventCoords(e));
@@ -100,11 +99,17 @@ export const Dial: React.FC<{}> = () => {
 		animate(
 			1200,
 			(t01) => {
-				const newAngle = dialState.current.lastAngle * (1 - t01);
+				const { lastAngle, prevTotal } = dialState.current;
+				const newAngle = lastAngle * (1 - t01);
+				const points = Math.round(lastAngle * t01 / DEGREES2POINTS);
+				const total = prevTotal + points;
 				setAngle(newAngle);
-				if (t01 > 0.999) {
+				dialState.current.total = total;
+
+				if (t01 === 1) {
 					dialState.current.enabled = true;
 					dialState.current.lastAngle = 0;
+					dialState.current.prevTotal = total;
 					setAngle(0);
 				}
 			},
@@ -122,7 +127,6 @@ export const Dial: React.FC<{}> = () => {
 		}
 
 		setAngle(angle);
-		setPoints((angle / DEGREES2POINTS));
 		dialState.current.lastAngle = angle;
 	}
 
@@ -147,11 +151,14 @@ export const Dial: React.FC<{}> = () => {
 	const color = new HSL(0, 53, 58);
 
 	return (
-		<div className="dial">
-			<Counter hasFocus getFocus={() => { }} onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
-			<div className="dial-cover" style={{ color: color.toString() }}>
-				{dialState.current.isDown && toSignedIntString(points)}
+		<main>
+			<div style={{ color: color.toString() }}>{dialState.current.total}</div>
+			<div className="dial">
+				<Counter hasFocus onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
+				<div className="dial-cover" style={{ color: color.toString() }}>
+					{angle != 0 && toSignedIntString(angle / DEGREES2POINTS)}
+				</div>
 			</div>
-		</div>
+		</main>
 	);
 };
