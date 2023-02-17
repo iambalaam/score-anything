@@ -3,6 +3,7 @@ import { animate } from "../util/animate";
 import { Color, darken, HSL } from "../util/color";
 import { getDegreesFromCenter, clamp, toSignedIntString } from "../util/math";
 import "./Dial.css";
+import { HapticValue } from "./HapticValue";
 
 export function conicGradient(degrees: number, baseColor: Color, backgroundColor: Color): string {
 	const angle = clamp(-360, 360, degrees);
@@ -55,7 +56,7 @@ const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, ang
 		}} >
 			<div className="start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
 			<div
-				className="end"
+				className={hasFocus ? 'end dragging' : 'end'}
 				style={{
 					background: color.toString(),
 					transform: `${center} rotate(${clampedAngle}deg) ${toEdge}`,
@@ -69,6 +70,7 @@ const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, ang
 }
 
 const DEGREES2POINTS = 30;
+const DRAGGING_CLASS = 'dragging';
 
 export interface DialRef {
 	total: number,
@@ -81,20 +83,25 @@ export interface DialRef {
 export const Dial: React.FC<{}> = () => {
 	const dialState = React.useRef<DialRef>({ total: 0, prevTotal: 0, isDown: false, lastAngle: 0, enabled: true, startingAngle: 0 });
 	const [angle, setAngle] = React.useState(0);
+	const [hasFocus, setFocus] = React.useState(-1);
 
 	const handleDown = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();
 		if (dialState.current.enabled) {
+			document.body.classList.add(DRAGGING_CLASS);
 			dialState.current.isDown = true;
+			setFocus(0);
 			dialState.current.startingAngle = getDegreesFromCenter(...getEventCoords(e));
 		}
 	}
 	const handleUp = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();
 		if (!dialState.current.isDown) return;
+		document.body.classList.remove(DRAGGING_CLASS);
 
 		dialState.current.isDown = false;
 		dialState.current.enabled = false;
+		setFocus(-1);
 
 		animate(
 			1200,
@@ -141,6 +148,7 @@ export const Dial: React.FC<{}> = () => {
 		window.removeEventListener('touchmove', handleMove);
 		window.removeEventListener('mouseup', handleUp);
 		window.removeEventListener('touchend', handleUp);
+		document.body.classList.remove(DRAGGING_CLASS);
 	}
 	React.useEffect(() => {
 		setupEventListeners();
@@ -154,9 +162,9 @@ export const Dial: React.FC<{}> = () => {
 		<main>
 			<div style={{ color: color.toString() }}>{dialState.current.total}</div>
 			<div className="dial">
-				<Counter hasFocus onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
+				<Counter hasFocus={dialState.current.isDown} onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
 				<div className="dial-cover" style={{ color: color.toString() }}>
-					{angle != 0 && toSignedIntString(angle / DEGREES2POINTS)}
+					{angle != 0 && <HapticValue value={toSignedIntString(angle / DEGREES2POINTS)} />}
 				</div>
 			</div>
 		</main>
