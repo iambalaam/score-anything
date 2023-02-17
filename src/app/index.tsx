@@ -9,5 +9,8 @@ export function App() {
 	);
 }
 
-const REACT_ROOT = createRoot(document.getElementById("root")!);
-REACT_ROOT.render(<App />);
+const domRoot = document.getElementById("root")
+if (domRoot) {
+	const reactRoot = createRoot(domRoot);
+	reactRoot.render(<App />);
+}
