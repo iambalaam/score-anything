@@ -2,6 +2,12 @@ html {
 	height: 100%;
 }
 
+/* Disable pull down to refresh on mobile */
+html,
+body {
+	overscroll-behavior: none;
+}
+
 * {
 	box-sizing: border-box;
 	margin: 0;

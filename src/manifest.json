@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+    "name": "Score Anything",
+    "short_name": "Score Anything",
+    "description": "Score Anything",
+    "icons": [
+        {
+            "src": "static/icon-500.png",
+            "sizes": "500x500",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/index.html",
+    "display": "fullscreen",
+    "theme_color": "indianred",
+    "background_color": "white"
+}

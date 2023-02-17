@@ -39,8 +39,8 @@ const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, ang
 	const center = "translate(-50%, -50%)";
 	const toEdge = "translateY(-35vmin)";
 	const startSemiCircle = angle > 0
-		? `linear-gradient(90deg, ${darken(color, angle)} 51%, transparent 51%)`
-		: `linear-gradient(270deg, ${darken(color, angle)} 51%, transparent 51% )`;
+		? `linear-gradient(90deg, ${darken(color, angle)} 52%, transparent 52%)`
+		: `linear-gradient(270deg, ${darken(color, angle)} 52%, transparent 52% )`;
 	const extraAngle = angle > 360
 		? angle - 360
 		: angle < -360

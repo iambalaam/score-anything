@@ -1,6 +1,8 @@
 const assert = require('assert');
 const { resolve } = require('path');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { htmlTemplate } = require('./html');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
@@ -49,10 +51,8 @@ module.exports = {
 
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Score Anything',
-            meta: {
-                viewport: { content: 'width=device-width, initial-scale=1, minimum-scale=1' }
-            }
+            templateContent: htmlTemplate,
+            inject: false
         }),
         isProd && new BundleAnalyzerPlugin({
             analyzerMode: 'static',
