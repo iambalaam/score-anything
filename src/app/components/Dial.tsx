@@ -46,7 +46,10 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 	const [hasFocus, setFocus] = React.useState(-1);
 
 	// TODO: Calculate offsets
-	const offsets = [0, 180];
+	const offsets = counters.map(({ color }) => {
+		if (!(color instanceof HSL)) throw new Error('Color not HSL');
+		return color.h - 45;
+	})
 
 	const handleDown = (index: number) => (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();
@@ -85,9 +88,9 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 				const newPoints = Math.round(deltaAngle * t01 / DEGREES2POINTS);
 				const newTotal = eventRef.current.prevTotals[i] + newPoints;
 
+				eventRef.current.totals[i] = newTotal;
 				setAngle(newAngle);
 				setCounter(i, newTotal);
-				eventRef.current.totals[i] = newTotal;
 
 				if (t01 === 1) {
 					eventRef.current.enabled = true;
@@ -140,11 +143,7 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 	return (
 		<main>
 			<div className="totals">
-				{counters.map(({ color }, i) => {
-					const total = eventRef.current.totals[i];
-					return <span key={color.toString()} style={{ color: color.toString() }}>{total}</span>
-				})}
-
+				{counters.map(({ color, total }, i) => <span key={color.toString()} style={{ color: color.toString() }}>{total}</span>)}
 			</div>
 			<div className="dial" style={{ backgroundColor: trackColor.toString() }}>
 				{
