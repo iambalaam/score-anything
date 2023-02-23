@@ -1,7 +1,7 @@
 import * as React from "react";
 import { animate } from "../util/animate";
 import { Color, HSL } from "../util/color";
-import { getDegreesFromCenter, toSignedIntString } from "../util/math";
+import { getDegreesFromCenter, toAbsCeil, toAbsFloor, toAbsFloorSignedIntString } from "../util/math";
 import { HapticValue } from "./HapticValue";
 
 import { Counter } from './Counter';
@@ -82,10 +82,10 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 			1000,
 			(t01) => {
 				const i = eventRef.current.hasFocus;
-				const offset = offsets[i];
-				const deltaAngle = (eventRef.current.onUpAngle - offset)
+				const deltaAngle = (eventRef.current.onUpAngle - eventRef.current.onDownAngle);
+				const deltaPoints = deltaAngle / DEGREES2POINTS;
 				const newAngle = deltaAngle * (1 - t01);
-				const newPoints = Math.round(deltaAngle * t01 / DEGREES2POINTS);
+				const newPoints = toAbsFloor(deltaPoints) - toAbsFloor(deltaPoints * (1 - t01));
 				const newTotal = eventRef.current.prevTotals[i] + newPoints;
 
 				eventRef.current.totals[i] = newTotal;
@@ -143,7 +143,14 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 	return (
 		<main>
 			<div className="totals">
-				{counters.map(({ color, total }, i) => <span key={color.toString()} style={{ color: color.toString() }}>{total}</span>)}
+				{counters.map(({ color, total }, i) =>
+					<span
+						key={color.toString()}
+						style={{ color: color.toString(), width: `${100 / counters.length}%` }}
+					>
+						{total}
+					</span>
+				)}
 			</div>
 			<div className="dial" style={{ backgroundColor: trackColor.toString() }}>
 				{
@@ -168,7 +175,7 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 				}
 
 				<div className="dial--cover" style={{ color: currentColor, backgroundColor: backgroundColor.toString() }}>
-					{angle != 0 && <HapticValue value={toSignedIntString(angle / DEGREES2POINTS)} />}
+					{angle != 0 && <HapticValue value={toAbsFloorSignedIntString(angle / DEGREES2POINTS)} />}
 				</div>
 			</div>
 		</main>

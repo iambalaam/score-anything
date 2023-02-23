@@ -53,10 +53,8 @@ main {
     cursor: grab;
 }
 
-.totals {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+.totals>span {
+    display: inline-block;
 }
 
 .dragging {

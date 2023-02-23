@@ -11,6 +11,12 @@ export function clamp(min: number, max: number, value: number) {
     return value;
 }
 
-export function toSignedIntString(x: number) {
-    return (x > 0 ? '+' : '') + x.toFixed(0);
+export function toAbsFloor(x: number) {
+    return x >= 0 ? Math.floor(x) : Math.ceil(x);
+}
+export function toAbsCeil(x: number) {
+    return -toAbsFloor(-x);
+}
+export function toAbsFloorSignedIntString(x: number) {
+    return (x > 0 ? '+' : '') + toAbsFloor(x);
 }
