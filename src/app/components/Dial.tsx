@@ -1,21 +1,11 @@
 import * as React from "react";
 import { animate } from "../util/animate";
-import { Color, darken, HSL } from "../util/color";
-import { getDegreesFromCenter, clamp, toSignedIntString } from "../util/math";
-import "./Dial.css";
+import { Color, HSL } from "../util/color";
+import { getDegreesFromCenter, toSignedIntString } from "../util/math";
 import { HapticValue } from "./HapticValue";
 
-export function conicGradient(degrees: number, baseColor: Color, backgroundColor: Color): string {
-	const angle = clamp(-360, 360, degrees);
-	if (angle > 0 || Object.is(+0, angle)/* we differentiate ±0 */) {
-		// forwards
-		return `conic-gradient(${backgroundColor} 0deg, ${darken(baseColor, angle)} 0deg, ${baseColor} ${angle}deg, ${backgroundColor} ${angle}deg)`;
-	} else {
-		// backwards
-		const backAngle = angle + 360;
-		return `conic-gradient(${backgroundColor} ${backAngle}deg, ${baseColor} ${backAngle}deg, ${darken(baseColor, angle)} 360deg, ${backgroundColor} 360deg)`;
-	}
-}
+import { Counter } from './Counter';
+import "./Dial.css";
 
 export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): [number, number] {
 	if ('clientX' in e) {
@@ -25,99 +15,85 @@ export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | R
 	}
 }
 
-const COUNTER_BLUR_Z = 100;
-const COUNTER_FOCUS_Z = 101;
-const COUNTER_END_Z = 102;
-interface CounterProps {
-	hasFocus: boolean;
-	color: Color;
-	backgroundColor: Color;
-	angle: number;
-	onDown: (e: React.MouseEvent | React.TouchEvent) => void;
-}
-const Counter: React.FC<CounterProps> = ({ hasFocus, color, backgroundColor, angle, onDown }) => {
-	const clampedAngle = clamp(-360, 360, angle);
-	const center = "translate(-50%, -50%)";
-	const toEdge = "translateY(-35vmin)";
-	const startSemiCircle = angle > 0
-		? `linear-gradient(90deg, ${darken(color, angle)} 52%, transparent 52%)`
-		: `linear-gradient(270deg, ${darken(color, angle)} 52%, transparent 52% )`;
-	const extraAngle = angle > 360
-		? angle - 360
-		: angle < -360
-			? angle + 360
-			: 0;
-
-	return (
-		<div className="counter" style={{
-			background: conicGradient(angle, color, backgroundColor),
-			transform: `rotateZ(${extraAngle}deg)`,
-			zIndex: hasFocus ? COUNTER_FOCUS_Z : COUNTER_BLUR_Z
-		}} >
-			<div className="start" style={{ background: startSemiCircle, transform: `${center} ${toEdge}` }}></div>
-			<div
-				className={hasFocus ? 'end dragging' : 'end'}
-				style={{
-					background: color.toString(),
-					transform: `${center} rotate(${clampedAngle}deg) ${toEdge}`,
-					zIndex: hasFocus ? COUNTER_END_Z : COUNTER_BLUR_Z
-				}}
-				onMouseDown={onDown}
-				onTouchStart={onDown}
-			></div>
-		</div>
-	)
-}
-
 const DEGREES2POINTS = 30;
 const DRAGGING_CLASS = 'dragging';
 
-export interface DialRef {
-	total: number,
-	prevTotal: number,
+interface EventHandlerRef {
+	hasFocus: number
 	isDown: boolean,
-	startingAngle: number,
-	lastAngle: number,
+	onDownAngle: number,
+	onMoveAngle: number,
+	onUpAngle: number,
 	enabled: boolean,
+	totals: number[],
+	prevTotals: number[]
 }
-export const Dial: React.FC<{}> = () => {
-	const dialState = React.useRef<DialRef>({ total: 0, prevTotal: 0, isDown: false, lastAngle: 0, enabled: true, startingAngle: 0 });
+const initialHandlerRef = { hasFocus: -1, isDown: false, enabled: true, onUpAngle: 0, onDownAngle: 0, onMoveAngle: 0 };
+
+export interface DialProps {
+	counters: Array<{
+		color: Color
+		total: number
+	}>,
+	setCounter: (index: number, total: number) => void,
+	backgroundColor: Color,
+	trackColor: Color
+}
+export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counters, setCounter }) => {
+	const totals = counters.map(({ total }) => total);
+	const eventRef = React.useRef<EventHandlerRef>({ ...initialHandlerRef, totals, prevTotals: totals });
 	const [angle, setAngle] = React.useState(0);
 	const [hasFocus, setFocus] = React.useState(-1);
 
-	const handleDown = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
+	// TODO: Calculate offsets
+	const offsets = [0, 180];
+
+	const handleDown = (index: number) => (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();
-		if (dialState.current.enabled) {
-			document.body.classList.add(DRAGGING_CLASS);
-			dialState.current.isDown = true;
-			setFocus(0);
-			dialState.current.startingAngle = getDegreesFromCenter(...getEventCoords(e));
+		if (!eventRef.current.enabled) return;
+
+		document.body.classList.add(DRAGGING_CLASS);
+		const startAngle = getDegreesFromCenter(...getEventCoords(e));
+		eventRef.current = {
+			...eventRef.current,
+			enabled: true,
+			isDown: true,
+			hasFocus: index,
+			onDownAngle: startAngle,
+			onMoveAngle: startAngle,
+			onUpAngle: startAngle
 		}
+		setFocus(index);
+
 	}
 	const handleUp = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();
-		if (!dialState.current.isDown) return;
-		document.body.classList.remove(DRAGGING_CLASS);
+		if (!eventRef.current.isDown) return;
 
-		dialState.current.isDown = false;
-		dialState.current.enabled = false;
-		setFocus(-1);
+		document.body.classList.remove(DRAGGING_CLASS);
+		eventRef.current.isDown = false;
+		eventRef.current.enabled = false;
+		eventRef.current.prevTotals = [...totals];
 
 		animate(
-			1200,
+			1000,
 			(t01) => {
-				const { lastAngle, prevTotal } = dialState.current;
-				const newAngle = lastAngle * (1 - t01);
-				const points = Math.round(lastAngle * t01 / DEGREES2POINTS);
-				const total = prevTotal + points;
+				const i = eventRef.current.hasFocus;
+				const offset = offsets[i];
+				const deltaAngle = (eventRef.current.onUpAngle - offset)
+				const newAngle = deltaAngle * (1 - t01);
+				const newPoints = Math.round(deltaAngle * t01 / DEGREES2POINTS);
+				const newTotal = eventRef.current.prevTotals[i] + newPoints;
+
 				setAngle(newAngle);
-				dialState.current.total = total;
+				setCounter(i, newTotal);
+				eventRef.current.totals[i] = newTotal;
 
 				if (t01 === 1) {
-					dialState.current.enabled = true;
-					dialState.current.lastAngle = 0;
-					dialState.current.prevTotal = total;
+					eventRef.current.enabled = true;
+					eventRef.current.prevTotals[i] = eventRef.current.totals[i];
 					setAngle(0);
+					setFocus(-1);
 				}
 			},
 			(x) => 1 - Math.pow((x - 1), 4)
@@ -125,16 +101,18 @@ export const Dial: React.FC<{}> = () => {
 	}
 
 	const handleMove = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
-		if (!dialState.current.isDown) return;
+		if (!eventRef.current.isDown) return;
 		if (e.cancelable) e.preventDefault();
 
-		let angle = getDegreesFromCenter(...getEventCoords(e)) - dialState.current.startingAngle;
-		while (Math.abs(dialState.current.lastAngle - angle) > 180) {
-			angle += dialState.current.lastAngle > angle ? 360 : -360;
+		let newOnMoveAngle = getDegreesFromCenter(...getEventCoords(e));
+
+		while (Math.abs(eventRef.current.onMoveAngle - newOnMoveAngle) > 180) {
+			newOnMoveAngle += eventRef.current.onMoveAngle > newOnMoveAngle ? 360 : -360;
 		}
 
-		setAngle(angle);
-		dialState.current.lastAngle = angle;
+		eventRef.current.onMoveAngle = newOnMoveAngle;
+		eventRef.current.onUpAngle = newOnMoveAngle;
+		setAngle(newOnMoveAngle - eventRef.current.onDownAngle);
 	}
 
 	function setupEventListeners() {
@@ -155,15 +133,42 @@ export const Dial: React.FC<{}> = () => {
 		return cleanupEventListeners;
 	}, []);
 
-	const backgroundColor = '#eee';
-	const color = new HSL(0, 53, 58);
+	const currentColor = hasFocus !== -1
+		? counters[hasFocus].color.toString()
+		: 'transparent';
 
 	return (
 		<main>
-			<div style={{ color: color.toString() }}>{dialState.current.total}</div>
-			<div className="dial">
-				<Counter hasFocus={dialState.current.isDown} onDown={handleDown} color={color} backgroundColor={backgroundColor} angle={angle} />
-				<div className="dial-cover" style={{ color: color.toString() }}>
+			<div className="totals">
+				{counters.map(({ color }, i) => {
+					const total = eventRef.current.totals[i];
+					return <span key={color.toString()} style={{ color: color.toString() }}>{total}</span>
+				})}
+
+			</div>
+			<div className="dial" style={{ backgroundColor: trackColor.toString() }}>
+				{
+					counters.map((counter, i) => hasFocus === i
+						? <Counter
+							key={counter.color.toString()}
+							hasFocus={true}
+							onDown={handleDown(i)}
+							color={counter.color}
+							angle={angle}
+							offset={offsets[i]}
+						/>
+						: <Counter
+							key={counter.color.toString()}
+							hasFocus={false}
+							onDown={handleDown(i)}
+							color={counter.color}
+							angle={0}
+							offset={offsets[i]}
+						/>
+					)
+				}
+
+				<div className="dial--cover" style={{ color: currentColor, backgroundColor: backgroundColor.toString() }}>
 					{angle != 0 && <HapticValue value={toSignedIntString(angle / DEGREES2POINTS)} />}
 				</div>
 			</div>

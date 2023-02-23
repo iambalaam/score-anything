@@ -8,13 +8,13 @@ main {
     width: 85vmin;
     height: 85vmin;
     position: relative;
+    border-radius: 50%;
 }
 
-.dial-cover {
+.dial--cover {
     width: 55vmin;
     height: 55vmin;
     border-radius: 100%;
-    background-color: white;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -32,7 +32,7 @@ main {
     will-change: transform;
 }
 
-.counter .start {
+.counter--start {
     position: absolute;
     will-change: transform;
     width: 15vmin;
@@ -42,7 +42,7 @@ main {
     left: 50%;
 }
 
-.counter .end {
+.counter--handle {
     position: absolute;
     width: 15vmin;
     height: 15vmin;
@@ -51,6 +51,12 @@ main {
     left: 50%;
     box-shadow: 0 0px 10px rgb(0 0 0 / 0.2);
     cursor: grab;
+}
+
+.totals {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
 .dragging {

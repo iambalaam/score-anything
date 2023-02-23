@@ -1,5 +1,4 @@
-import { HSL } from '../util/color';
-import { conicGradient } from './Dial';
+import { conicGradient, HSL } from './color';
 
 const BLUE = new HSL(208, 64, 57);
 

@@ -19,7 +19,7 @@ export function animate(
 
         callback(tEval);
 
-        if (cumMs > time) return callback(1);
+        if (cumMs >= time || tEval >= 1) return;
         lastTimestamp = timestamp;
         requestAnimationFrame(loop);
     }
