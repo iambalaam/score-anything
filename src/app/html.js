@@ -4,7 +4,7 @@ function htmlTemplate({ htmlWebpackPlugin }) {
     <head>
         <title>Score Anything</title>
         <link rel="manifest" href="manifest.json" />
-        <meta name="viewport" content="width=device-width, initial-scale=1 minimum-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
         ${htmlWebpackPlugin.tags.headTags}
     </head>
     <body>
