@@ -3,6 +3,7 @@
         "outDir": "../../dist",
         "strict": true,
         "skipLibCheck": true,
+        "module": "ES6",
         "lib": [
             "WebWorker",
             "ES2015",
