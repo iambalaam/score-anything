@@ -1,4 +1,4 @@
-export const cacheFiles = [
+const cacheFiles = [
     '/main.bundle.js',
     '/main.css',
     '/manifest.json',
