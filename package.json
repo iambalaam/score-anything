@@ -5,13 +5,15 @@
     "node": "^18"
   },
   "scripts": {
-    "build": "run-s webpack copy",
+    "build": "run-s webpack worker copy test:integ",
+    "worker": "tsc -p ./src/worker",
     "webpack": "cross-env NODE_ENV=production webpack --config src/app/webpack.config.js",
     "start": "cross-env NODE_ENV=development webpack serve --config src/app/webpack.config.js --open",
     "copy": "run-p copy:*",
     "copy:static": "copyfiles ./static/* ./dist/",
     "copy:manifest": "copyfiles --flat ./src/manifest.json ./dist/",
-    "test": "jest"
+    "test:unit": "jest --config jest.unit.config.js",
+    "test:integ": "jest --config jest.integ.config.js"
   },
   "repository": {
     "type": "git",

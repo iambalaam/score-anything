@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import * as React from 'react';
-import { App } from './index';
+import { App } from './app';
 
 test('The app runs', () => {
     const { container } = render(<App />);

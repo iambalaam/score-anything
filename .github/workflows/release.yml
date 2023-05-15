@@ -27,10 +27,13 @@ jobs:
         run: npm ci
 
       - name: Unit test 🔍
-        run: npm test
+        run: npm run test:unit
 
       - name: Build 🏗️ 
         run: npm run build
+
+      - name: Integ test 🔍
+        run: npm run test:integ
 
       - name: Release 🚀
         uses: JamesIves/github-pages-deploy-action@v4
