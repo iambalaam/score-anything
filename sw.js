@@ -1,4 +1,5 @@
-export const cacheFiles = [
+"use strict";
+const cacheFiles = [
     '/main.bundle.js',
     '/main.css',
     '/manifest.json',
