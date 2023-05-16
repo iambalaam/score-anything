@@ -1,0 +1,61 @@
+h1 {
+    text-align: left;
+    margin: 4vmin;
+    font-size: 4vmin;
+}
+
+#player-setup {
+    padding: 10vmin;
+    width: 100%;
+    height: 100%;
+}
+
+.player-count {
+    display: grid;
+    gap: 2vmin;
+}
+/* display is portrait */
+@media (max-aspect-ratio: 1/1) {
+    .player-count { grid-template-columns: 1fr 1fr }
+}
+/* display is landdcape */
+@media (min-aspect-ratio: 1/1) {
+    .player-count { grid-template-columns: 1fr 1fr 1fr 1fr }
+}
+
+.player-count button {
+    border: 1px solid #ccc;
+    border-radius: 2vmin;
+}
+
+.player-count .count {
+    font-size: 10vmin;
+    background-color: #ddd;
+}
+.player-count .custom {
+    border-radius: 2vmin;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    grid-column: 1/-1;
+    display: flex;
+    align-items: center;
+    padding: 1vmin;
+}
+.player-count .custom * {
+    font-size: 4vmin;
+}
+.player-count .custom .text {
+    margin: 0 2vmin;
+}
+.player-count .custom .value {
+    font-size: 10vmin;
+    width: 16vmin;
+}
+.player-count .custom #range {
+    flex-grow: 2;
+    max-width: 28vw; /* fixes small screen overflow */
+}
+.player-count .custom button {
+    height: 100%;
+    flex-grow: 1;
+}

@@ -1,11 +1,13 @@
 import * as React from "react";
 import { animate } from "../util/animate";
-import { Color, HSL } from "../util/color";
-import { getDegreesFromCenter, toAbsCeil, toAbsFloor, toAbsFloorSignedIntString } from "../util/math";
+import { Color } from "../util/color";
+import { calculateCounterOffsets } from "../util/setup";
+import { getDegreesFromCenter, toAbsFloor, toAbsFloorSignedIntString } from "../util/math";
 import { HapticValue } from "./HapticValue";
 
 import { Counter } from './Counter';
 import "./Dial.css";
+import { CounterContext } from "../app";
 
 export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): [number, number] {
 	if ('clientX' in e) {
@@ -31,10 +33,7 @@ interface EventHandlerRef {
 const initialHandlerRef = { hasFocus: -1, isDown: false, enabled: true, onUpAngle: 0, onDownAngle: 0, onMoveAngle: 0 };
 
 export interface DialProps {
-	counters: Array<{
-		color: Color
-		total: number
-	}>,
+	counters: CounterContext[],
 	setCounter: (index: number, total: number) => void,
 	backgroundColor: Color,
 	trackColor: Color
@@ -45,11 +44,7 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 	const [angle, setAngle] = React.useState(0);
 	const [hasFocus, setFocus] = React.useState(-1);
 
-	// TODO: Calculate offsets
-	const offsets = counters.map(({ color }) => {
-		if (!(color instanceof HSL)) throw new Error('Color not HSL');
-		return color.h - 45;
-	})
+	const offsets = calculateCounterOffsets(counters.length);
 
 	const handleDown = (index: number) => (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();

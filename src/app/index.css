@@ -1,5 +1,11 @@
 html {
 	height: 100%;
+	font-family: monospace;
+}
+
+main {
+	font-size: 10vmin;
+	text-align: center;
 }
 
 /* Disable pull down to refresh on mobile */
@@ -21,4 +27,8 @@ body {
 	align-items: center;
 	overflow: hidden;
 	overscroll-behavior-y: contain;
+}
+
+button {
+	cursor: pointer;
 }

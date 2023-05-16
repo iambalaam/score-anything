@@ -4,5 +4,5 @@ import { App } from './app';
 
 test('The app runs', () => {
     const { container } = render(<App />);
-    expect(container.querySelector('.dial')).not.toBe(null);
+    expect(container.querySelector('main')).not.toBe(null);
 });

@@ -1,31 +1,49 @@
 import * as React from "react";
 import { Dial } from "./components/Dial";
 import "./index.css";
-import { HSL } from "./util/color";
+import { PlayerSetup } from "./pages/PlayerSetup";
+import { Color } from "./util/color";
+
+export interface CounterContext {
+	color: Color,
+	total: number
+}
 
 const colors = {
 	backgroundColor: 'white',
 	trackColor: '#eee'
 }
 
+export type AppState = 'player-setup' | 'counter' | 'history';
+
 export function App() {
-	const [counters, setCounters] = React.useState(new Array(4).fill(0).map((_, i) => {
-		const angle = i * 90;
-		return { total: 0, color: new HSL(angle, 60, 60) };
-	}));
-	const setCounterValue = (index: number, total: number) => {
-		setCounters((prevState) => {
+	const [appState, setAppState] = React.useState<AppState>('player-setup');
+	const [counterContexts, setCounterContexts] = React.useState<CounterContext[]>([]);
+
+	const startGame = (ctxs: CounterContext[]) => {
+		setCounterContexts(ctxs);
+		setAppState('counter');
+	}
+
+	const setCounterContext = (index: number, total: number) => {
+		setCounterContexts((prevState) => {
 			const copy = [...prevState];
 			copy[index] = { ...copy[index], total };
 			return copy;
 		});
 	}
 
-	return (
-		<Dial
-			counters={counters}
-			setCounter={setCounterValue}
-			{...colors}
-		/>
-	);
+	// maybe this should be routing
+	switch (appState) {
+		case 'player-setup':
+			return <PlayerSetup startGame={startGame}/>
+		case 'history':
+		case 'counter':
+			return (
+				<Dial
+					setCounter={setCounterContext}
+					counters={counterContexts}
+					{...colors}
+			/>)
+	}
 }
