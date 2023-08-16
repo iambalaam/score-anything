@@ -33,18 +33,21 @@ interface EventHandlerRef {
 const initialHandlerRef = { hasFocus: -1, isDown: false, enabled: true, onUpAngle: 0, onDownAngle: 0, onMoveAngle: 0 };
 
 export interface DialProps {
-	counters: CounterContext[],
-	setCounter: (index: number, total: number) => void,
+	counterCtxs: CounterContext[],
+	totals: number[],
+	addToHistory: (index: number, total: number) => void,
 	backgroundColor: Color,
 	trackColor: Color
 }
-export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counters, setCounter }) => {
-	const totals = counters.map(({ total }) => total);
+
+export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counterCtxs, totals, addToHistory }) => {
+	const [localTotals, setLocalTotals] = React.useState(totals);
+
 	const eventRef = React.useRef<EventHandlerRef>({ ...initialHandlerRef, totals, prevTotals: totals });
 	const [angle, setAngle] = React.useState(0);
 	const [hasFocus, setFocus] = React.useState(-1);
 
-	const offsets = calculateCounterOffsets(counters.length);
+	const offsets = calculateCounterOffsets(counterCtxs.length);
 
 	const handleDown = (index: number) => (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();
@@ -73,25 +76,32 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 		eventRef.current.enabled = false;
 		eventRef.current.prevTotals = [...totals];
 
+		const i = eventRef.current.hasFocus;
+		const deltaAngle = (eventRef.current.onUpAngle - eventRef.current.onDownAngle);
+		const deltaPoints = deltaAngle / DEGREES2POINTS;
 		animate(
 			1000,
 			(t01) => {
-				const i = eventRef.current.hasFocus;
-				const deltaAngle = (eventRef.current.onUpAngle - eventRef.current.onDownAngle);
-				const deltaPoints = deltaAngle / DEGREES2POINTS;
 				const newAngle = deltaAngle * (1 - t01);
 				const newPoints = toAbsFloor(deltaPoints) - toAbsFloor(deltaPoints * (1 - t01));
 				const newTotal = eventRef.current.prevTotals[i] + newPoints;
+				const newTotals = [...totals];
+				newTotals[i] = newTotal;
 
 				eventRef.current.totals[i] = newTotal;
 				setAngle(newAngle);
-				setCounter(i, newTotal);
+				setLocalTotals(newTotals);
 
 				if (t01 === 1) {
+					// end of animation
 					eventRef.current.enabled = true;
 					eventRef.current.prevTotals[i] = eventRef.current.totals[i];
 					setAngle(0);
 					setFocus(-1);
+
+					if (newPoints !== 0) {
+						addToHistory(i, eventRef.current.totals[i]);
+					}
 				}
 			},
 			(x) => 1 - Math.pow((x - 1), 4)
@@ -132,24 +142,24 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 	}, []);
 
 	const currentColor = hasFocus !== -1
-		? counters[hasFocus].color.toString()
+		? counterCtxs[hasFocus].color.toString()
 		: 'transparent';
 
 	return (
 		<main>
 			<div className="totals">
-				{counters.map(({ color, total }, i) =>
+				{counterCtxs.map(({ color }, i) =>
 					<span
 						key={color.toString()}
-						style={{ color: color.toString(), width: `${100 / counters.length}%` }}
+						style={{ color: color.toString(), width: `${100 / counterCtxs.length}%` }}
 					>
-						{total}
+						{localTotals[i]}
 					</span>
 				)}
 			</div>
 			<div className="dial" style={{ backgroundColor: trackColor.toString() }}>
 				{
-					counters.map((counter, i) => hasFocus === i
+					counterCtxs.map((counter, i) => hasFocus === i
 						? <Counter
 							key={counter.color.toString()}
 							hasFocus={true}

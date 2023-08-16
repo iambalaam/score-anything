@@ -4,9 +4,15 @@ import "./index.css";
 import { PlayerSetup } from "./pages/PlayerSetup";
 import { Color } from "./util/color";
 
+export type History = number[][]
+export interface SessionState {
+	counters: CounterContext[]
+	history: History
+}
+
 export interface CounterContext {
 	color: Color,
-	total: number
+	name?: string
 }
 
 const colors = {
@@ -19,16 +25,22 @@ export type AppState = 'player-setup' | 'counter' | 'history';
 export function App() {
 	const [appState, setAppState] = React.useState<AppState>('player-setup');
 	const [counterContexts, setCounterContexts] = React.useState<CounterContext[]>([]);
+	const [history, setHistory] = React.useState<History>([])
 
 	const startGame = (ctxs: CounterContext[]) => {
 		setCounterContexts(ctxs);
+		setHistory([Array(ctxs.length).fill(0)]);
 		setAppState('counter');
 	}
 
-	const setCounterContext = (index: number, total: number) => {
-		setCounterContexts((prevState) => {
-			const copy = [...prevState];
-			copy[index] = { ...copy[index], total };
+	const addToHistory = (index: number, total: number) => {
+		setHistory((prevHistory) => {
+			const copy: History = JSON.parse(JSON.stringify(prevHistory));
+			const lastEntry = copy[copy.length - 1];
+			const nextEntry = [...lastEntry];
+			nextEntry[index] = total;
+			copy.push(nextEntry);
+
 			return copy;
 		});
 	}
@@ -41,9 +53,11 @@ export function App() {
 		case 'counter':
 			return (
 				<Dial
-					setCounter={setCounterContext}
-					counters={counterContexts}
+					addToHistory={addToHistory}
+					counterCtxs={counterContexts}
+					totals={ history[history.length-1]}
 					{...colors}
-			/>)
+				/>
+			)
 	}
 }
