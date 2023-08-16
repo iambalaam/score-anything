@@ -7,7 +7,7 @@ import { HapticValue } from "./HapticValue";
 
 import { Counter } from './Counter';
 import "./Dial.css";
-import { CounterContext } from "../app";
+import { ColorContext, CounterContext } from "../app";
 
 export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): [number, number] {
 	if ('clientX' in e) {
@@ -36,13 +36,10 @@ export interface DialProps {
 	counterCtxs: CounterContext[],
 	totals: number[],
 	addToHistory: (index: number, total: number) => void,
-	backgroundColor: Color,
-	trackColor: Color
 }
 
-export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counterCtxs, totals, addToHistory }) => {
+export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory }) => {	
 	const [localTotals, setLocalTotals] = React.useState(totals);
-
 	const eventRef = React.useRef<EventHandlerRef>({ ...initialHandlerRef, totals, prevTotals: totals });
 	const [angle, setAngle] = React.useState(0);
 	const [hasFocus, setFocus] = React.useState(-1);
@@ -144,6 +141,8 @@ export const Dial: React.FC<DialProps> = ({ backgroundColor, trackColor, counter
 	const currentColor = hasFocus !== -1
 		? counterCtxs[hasFocus].color.toString()
 		: 'transparent';
+
+	const { backgroundColor, trackColor } = React.useContext(ColorContext);
 
 	return (
 		<main>

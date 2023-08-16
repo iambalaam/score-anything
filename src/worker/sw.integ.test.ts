@@ -11,8 +11,7 @@ const ignoreList = [
     'sw.js',
     'bundle-analyzer.html',
     '.LICENSE.txt',
-    '.js.map',
-    '.css.map'
+    '.map',
 ];
 
 function shouldCache(filePath: string) {

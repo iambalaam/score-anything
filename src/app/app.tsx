@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Dial } from "./components/Dial";
-import "./index.css";
 import { PlayerSetup } from "./pages/PlayerSetup";
 import { Color } from "./util/color";
+import { Session } from "./pages/Session";
+import "./index.css";
 
 export type History = number[][]
 export interface SessionState {
@@ -14,18 +14,22 @@ export interface CounterContext {
 	color: Color,
 	name?: string
 }
-
-const colors = {
-	backgroundColor: 'white',
+export interface ColorContext {
+	backgroundColor: Color;
+	trackColor: Color,
+}
+export const initialColors: ColorContext = {
+	backgroundColor: '#fff',
 	trackColor: '#eee'
 }
+export const ColorContext = React.createContext<ColorContext>(initialColors);
 
 export type AppState = 'player-setup' | 'counter' | 'history';
 
 export function App() {
 	const [appState, setAppState] = React.useState<AppState>('player-setup');
 	const [counterContexts, setCounterContexts] = React.useState<CounterContext[]>([]);
-	const [history, setHistory] = React.useState<History>([])
+	const [history, setHistory] = React.useState<History>([]);
 
 	const startGame = (ctxs: CounterContext[]) => {
 		setCounterContexts(ctxs);
@@ -46,18 +50,23 @@ export function App() {
 	}
 
 	// maybe this should be routing
+	let body: JSX.Element;
 	switch (appState) {
 		case 'player-setup':
-			return <PlayerSetup startGame={startGame}/>
+			body = <PlayerSetup startGame={startGame} />;
+			break;
 		case 'history':
 		case 'counter':
-			return (
-				<Dial
-					addToHistory={addToHistory}
-					counterCtxs={counterContexts}
-					totals={ history[history.length-1]}
-					{...colors}
-				/>
-			)
+			body = <Session
+				history={history}
+				addToHistory={addToHistory}
+				initialStates={counterContexts}
+				counterCtxs={counterContexts}
+			/>;
+			break;
 	}
+
+	return <ColorContext.Provider value={initialColors}>
+		{body}
+	</ColorContext.Provider>
 }
