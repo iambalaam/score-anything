@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Color, conicGradient, darken } from '../util/color';
+import { HSL, HSL2String, conicGradient, darken } from '../util/color';
 
 const COUNTER_BLUR_Z = 99;
 const HANDLE_BLUR_Z = 100;
@@ -7,7 +7,7 @@ const COUNTER_FOCUS_Z = 101;
 const HANDLE_FOCUS_Z = 102;
 interface CounterProps {
     hasFocus: boolean;
-    color: Color;
+    color: HSL;
     angle: number;
     offset: number;
     onDown: (e: React.MouseEvent | React.TouchEvent) => void;
@@ -16,8 +16,8 @@ export const Counter: React.FC<CounterProps> = ({ hasFocus, color, angle, offset
     const center = "translate(-50%, -50%)";
     const toEdge = "translateY(-35vmin)";
     const startSemiCircle = angle > 0
-        ? `linear-gradient(90deg, ${darken(color, angle)} 52%, transparent 52%)`
-        : `linear-gradient(270deg, ${darken(color, angle)} 52%, transparent 52%)`;
+        ? `linear-gradient(90deg, ${HSL2String(darken(color, angle))} 52%, transparent 52%)`
+        : `linear-gradient(270deg, ${HSL2String(darken(color, angle))} 52%, transparent 52%)`;
     const extraAngle = angle > 360
         ? angle - 360
         : angle < -360
@@ -35,7 +35,7 @@ export const Counter: React.FC<CounterProps> = ({ hasFocus, color, angle, offset
             <div
                 className={hasFocus ? 'counter--handle dragging' : 'counter--handle'}
                 style={{
-                    backgroundColor: color.toString(),
+                    backgroundColor: HSL2String(color),
                     transform: `${center} rotate(${angle + offset}deg) ${toEdge}`,
                     zIndex: hasFocus ? HANDLE_FOCUS_Z : HANDLE_BLUR_Z
                 }}

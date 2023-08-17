@@ -7,6 +7,7 @@ import { HapticValue } from "./HapticValue";
 import { Counter } from './Counter';
 import "./Dial.css";
 import { ColorContext, CounterContext } from "../app";
+import { HSL2String } from "../util/color";
 
 export function getEventCoords(e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent): [number, number] {
 	if ('clientX' in e) {
@@ -36,7 +37,7 @@ export interface DialProps {
 	addToHistory: (index: number, total: number) => void,
 }
 
-export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory }) => {	
+export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory }) => {
 	const eventRef = React.useRef<EventHandlerRef>({ ...initialHandlerRef, prevTotals: totals });
 	const [localTotals, setLocalTotals] = React.useState(totals);
 	const [angle, setAngle] = React.useState(0);
@@ -143,7 +144,7 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 	}, [totals, addToHistory]);
 
 	const currentColor = hasFocus !== -1
-		? counterCtxs[hasFocus].color.toString()
+		? HSL2String(counterCtxs[hasFocus].color)
 		: 'transparent';
 
 	const { backgroundColor, trackColor } = React.useContext(ColorContext);
@@ -153,18 +154,18 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 			<div className="totals">
 				{counterCtxs.map(({ color }, i) =>
 					<span
-						key={color.toString()}
-						style={{ color: color.toString(), width: `${100 / counterCtxs.length}%` }}
+						key={HSL2String(color)}
+						style={{ color: HSL2String(color), width: `${100 / counterCtxs.length}%` }}
 					>
 						{localTotals[i]}
 					</span>
 				)}
 			</div>
-			<div className="dial" style={{ backgroundColor: trackColor.toString() }}>
+			<div className="dial" style={{ backgroundColor: HSL2String(trackColor) }}>
 				{
 					counterCtxs.map((counter, i) => hasFocus === i
 						? <Counter
-							key={counter.color.toString()}
+							key={HSL2String(counter.color)}
 							hasFocus={true}
 							onDown={handleDown(i)}
 							color={counter.color}
@@ -172,7 +173,7 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 							offset={offsets[i]}
 						/>
 						: <Counter
-							key={counter.color.toString()}
+							key={HSL2String(counter.color)}
 							hasFocus={false}
 							onDown={handleDown(i)}
 							color={counter.color}
@@ -182,7 +183,7 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 					)
 				}
 
-				<div className="dial--cover" style={{ color: currentColor, backgroundColor: backgroundColor.toString() }}>
+				<div className="dial--cover" style={{ color: currentColor, backgroundColor: HSL2String(backgroundColor) }}>
 					{angle != 0 && <HapticValue value={toAbsFloorSignedIntString(angle / DEGREES2POINTS)} />}
 				</div>
 			</div>

@@ -1,27 +1,29 @@
 import * as React from "react";
 import { PlayerSetup } from "./pages/PlayerSetup";
-import { Color } from "./util/color";
+import { Color, HSL } from "./util/color";
 import { Session, SessionState } from "./pages/Session";
 import { History } from "./pages/History";
 import "./index.css";
 import { useLocalStorage } from "./util/storage";
+import { Main } from "./pages/Main";
+import { SessionSelect } from "./pages/SessionSelect";
 
 export type History = number[][]
 export interface CounterContext {
-	color: Color,
+	color: HSL,
 	name?: string
 }
 export interface ColorContext {
-	backgroundColor: Color;
-	trackColor: Color,
+	backgroundColor: HSL;
+	trackColor: HSL,
 }
 export const initialColors: ColorContext = {
-	backgroundColor: '#fff',
-	trackColor: '#eee'
+	backgroundColor: { h: 0, s: 0, l: 100 },
+	trackColor: { h: 0, s: 0, l: 90 }
 }
 export const ColorContext = React.createContext<ColorContext>(initialColors);
 
-export type Page = 'player-setup' | 'counter' | 'history';
+export type Page = 'main' | 'session-select' | 'player-setup' | 'counter' | 'history';
 
 export interface AppState {
 	sessions: SessionState[]
@@ -31,7 +33,7 @@ export function App() {
 	const [appState, setAppState] = useLocalStorage<AppState>('data', { sessions: [] });
 
 	const [currentSession, setCurrentSession] = React.useState<number>(-1);
-	const [page, setPage] = React.useState<Page>('player-setup');
+	const [page, setPage] = React.useState<Page>('main');
 
 	const startNewSession = (ctxs: CounterContext[]) => {
 		setAppState({
@@ -57,15 +59,20 @@ export function App() {
 
 	let body: JSX.Element;
 	switch (page) {
+		case 'main':
+			body = <Main
+				setPage={setPage}
+			/>;
+			break;
 		case 'player-setup':
 			body = <PlayerSetup startNewSession={startNewSession} />;
 			break;
-		case 'history':
-			body = <History
-				data={appState.sessions[currentSession]}
-				setData={updateSession}
+		case 'session-select':
+			body = <SessionSelect
+				appState={appState}
+				setCurrentSession={setCurrentSession}
 				setPage={setPage}
-			/>
+			/>;
 			break;
 		case 'counter':
 			body = <Session
@@ -74,6 +81,15 @@ export function App() {
 				setPage={setPage}
 			/>;
 			break;
+		case 'history':
+			body = <History
+				data={appState.sessions[currentSession]}
+				setData={updateSession}
+				setPage={setPage}
+			/>;
+			break;
+		default:
+			body = <h1>?</h1>;
 	}
 
 	return <ColorContext.Provider value={initialColors}>

@@ -1,6 +1,6 @@
 import { conicGradient, HSL } from './color';
 
-const BLUE = new HSL(208, 64, 57);
+const BLUE: HSL = { h: 208, s: 64, l: 57 };
 
 describe('conicGradient()', () => {
     it('is a valid css class', () => {

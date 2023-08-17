@@ -4,7 +4,7 @@ import { HSL } from "./color";
 export function createDefaultCounterContexts(playerCount: number): CounterContext[] {
     return calculateCounterOffsets(playerCount)
         .map((angle) => ({
-            color: new HSL(angle, 60, 60),
+            color: { h: angle, s: 60, l: 60 } as HSL,
             total: 0
         }));
 }

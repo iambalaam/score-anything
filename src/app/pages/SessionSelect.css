@@ -1,0 +1,14 @@
+.sessions {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.session {
+    display: inline-block;
+    width: 30vmin;
+    height: 30vmin;
+    border-radius: 4vmin;
+    overflow: hidden;
+    margin: 2vmin;
+    background-color: #ccc;
+}

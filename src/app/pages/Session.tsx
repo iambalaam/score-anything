@@ -5,8 +5,8 @@ import { CounterContext, History, Page } from '../app';
 import { Dial } from '../components/Dial';
 
 export interface SessionState {
-	counters: CounterContext[]
-	history: History
+    counters: CounterContext[]
+    history: History
 }
 
 export interface SessionProps {
@@ -21,16 +21,16 @@ export function Session({ data, setData, setPage }: SessionProps) {
         // at this point the history has already been changed
         const copy: History = [...data.history]
         const lastEntry = copy[copy.length - 1];
-        const nextEntry = [...lastEntry];	
+        const nextEntry = [...lastEntry];
         nextEntry[index] = total;
         copy.push(nextEntry);
-        
+
         setData({
             counters: data.counters,
             history: copy
         });
     }
-    
+
     const undo = () => {
         if (data.history.length < 2) return;
 
@@ -46,7 +46,7 @@ export function Session({ data, setData, setPage }: SessionProps) {
 
     return <main id='session'>
         <div className="controls">
-            <button className='home' onClick={() => setPage('player-setup')}>🏠</button>
+            <button className='home' onClick={() => setPage('main')}>🏠</button>
             <button className='history' onClick={() => setPage('history')}>📚</button>
             <button className='undo' onClick={undo}>↺</button>
         </div>
