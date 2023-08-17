@@ -4,6 +4,7 @@ import { Color } from "./util/color";
 import { Session, SessionState } from "./pages/Session";
 import { History } from "./pages/History";
 import "./index.css";
+import { useLocalStorage } from "./util/storage";
 
 export type History = number[][]
 export interface CounterContext {
@@ -27,10 +28,9 @@ export interface AppState {
 }
 
 export function App() {
-	// todo: initialise from localstorage
-	const [appState, setAppState] = React.useState<AppState>({ sessions: [] });
-	const [currentSession, setCurrentSession] = React.useState<number>(-1);
+	const [appState, setAppState] = useLocalStorage<AppState>('data', { sessions: [] });
 
+	const [currentSession, setCurrentSession] = React.useState<number>(-1);
 	const [page, setPage] = React.useState<Page>('player-setup');
 
 	const startNewSession = (ctxs: CounterContext[]) => {
