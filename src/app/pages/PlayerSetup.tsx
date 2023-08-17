@@ -4,10 +4,10 @@ import { createDefaultCounterContexts } from '../util/setup';
 import './PlayerSetup.css';
 
 export interface PlayerSetupProps {
-    startGame: (counters: CounterContext[]) => void
+    startNewSession: (counters: CounterContext[]) => void
 }
 
-export function PlayerSetup({ startGame }: PlayerSetupProps) {
+export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
 
     const [customPlayerCount, setCustomPlayerCount] = React.useState<number>(6)
 
@@ -18,7 +18,7 @@ export function PlayerSetup({ startGame }: PlayerSetupProps) {
                 <button
                     key={playerCount}
                     className="count"
-                    onClick={() => startGame(createDefaultCounterContexts(playerCount))}
+                    onClick={() => startNewSession(createDefaultCounterContexts(playerCount))}
                 >
                     {playerCount}
                 </button>
@@ -32,7 +32,7 @@ export function PlayerSetup({ startGame }: PlayerSetupProps) {
                 <span className="value">{customPlayerCount}</span>
                 <button
                     className='start count'
-                    onClick={() => startGame(createDefaultCounterContexts(customPlayerCount))}
+                    onClick={() => startNewSession(createDefaultCounterContexts(customPlayerCount))}
                 >
                     Start
                 </button>

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { animate } from "../util/animate";
-import { Color } from "../util/color";
 import { calculateCounterOffsets } from "../util/setup";
 import { getDegreesFromCenter, toAbsFloor, toAbsFloorSignedIntString } from "../util/math";
 import { HapticValue } from "./HapticValue";
@@ -27,7 +26,6 @@ interface EventHandlerRef {
 	onMoveAngle: number,
 	onUpAngle: number,
 	enabled: boolean,
-	totals: number[],
 	prevTotals: number[]
 }
 const initialHandlerRef = { hasFocus: -1, isDown: false, enabled: true, onUpAngle: 0, onDownAngle: 0, onMoveAngle: 0 };
@@ -39,12 +37,17 @@ export interface DialProps {
 }
 
 export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory }) => {	
+	const eventRef = React.useRef<EventHandlerRef>({ ...initialHandlerRef, prevTotals: totals });
 	const [localTotals, setLocalTotals] = React.useState(totals);
-	const eventRef = React.useRef<EventHandlerRef>({ ...initialHandlerRef, totals, prevTotals: totals });
 	const [angle, setAngle] = React.useState(0);
 	const [hasFocus, setFocus] = React.useState(-1);
 
 	const offsets = calculateCounterOffsets(counterCtxs.length);
+
+	// Really don't like this useEffect
+	React.useEffect(() => {
+		setLocalTotals(totals);
+	}, [totals]);
 
 	const handleDown = (index: number) => (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
 		if (e.cancelable) e.preventDefault();
@@ -85,19 +88,18 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 				const newTotals = [...totals];
 				newTotals[i] = newTotal;
 
-				eventRef.current.totals[i] = newTotal;
 				setAngle(newAngle);
 				setLocalTotals(newTotals);
 
 				if (t01 === 1) {
 					// end of animation
 					eventRef.current.enabled = true;
-					eventRef.current.prevTotals[i] = eventRef.current.totals[i];
+					eventRef.current.prevTotals[i] = newTotals[i];
 					setAngle(0);
 					setFocus(-1);
 
 					if (newPoints !== 0) {
-						addToHistory(i, eventRef.current.totals[i]);
+						addToHistory(i, newTotals[i]);
 					}
 				}
 			},
@@ -136,7 +138,7 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 	React.useEffect(() => {
 		setupEventListeners();
 		return cleanupEventListeners;
-	}, []);
+	}, [totals, addToHistory]);
 
 	const currentColor = hasFocus !== -1
 		? counterCtxs[hasFocus].color.toString()

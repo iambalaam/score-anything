@@ -1,15 +1,10 @@
 import * as React from "react";
 import { PlayerSetup } from "./pages/PlayerSetup";
 import { Color } from "./util/color";
-import { Session } from "./pages/Session";
+import { Session, SessionState } from "./pages/Session";
 import "./index.css";
 
 export type History = number[][]
-export interface SessionState {
-	counters: CounterContext[]
-	history: History
-}
-
 export interface CounterContext {
 	color: Color,
 	name?: string
@@ -24,44 +19,51 @@ export const initialColors: ColorContext = {
 }
 export const ColorContext = React.createContext<ColorContext>(initialColors);
 
-export type AppState = 'player-setup' | 'counter' | 'history';
+export type Page = 'player-setup' | 'counter' | 'history';
+
+export interface AppState {
+	sessions: SessionState[]
+}
 
 export function App() {
-	const [appState, setAppState] = React.useState<AppState>('player-setup');
-	const [counterContexts, setCounterContexts] = React.useState<CounterContext[]>([]);
-	const [history, setHistory] = React.useState<History>([]);
+	// todo: initialise from localstorage
+	const [appState, setAppState] = React.useState<AppState>({ sessions: [] });
+	const [currentSession, setCurrentSession] = React.useState<number>(-1);
 
-	const startGame = (ctxs: CounterContext[]) => {
-		setCounterContexts(ctxs);
-		setHistory([Array(ctxs.length).fill(0)]);
-		setAppState('counter');
+	const [page, setPage] = React.useState<Page>('player-setup');
+
+	const startNewSession = (ctxs: CounterContext[]) => {
+		setAppState({
+			sessions: [
+				...appState.sessions,
+				{ counters: ctxs, history: [Array(ctxs.length).fill(0)] }
+			]
+		});
+		setCurrentSession(appState.sessions.length);
+		setPage('counter');
 	}
 
-	const addToHistory = (index: number, total: number) => {
-		setHistory((prevHistory) => {
-			const copy: History = JSON.parse(JSON.stringify(prevHistory));
-			const lastEntry = copy[copy.length - 1];
-			const nextEntry = [...lastEntry];
-			nextEntry[index] = total;
-			copy.push(nextEntry);
+	const updateSession = (data: SessionState) => {
+		setAppState((prevState) => {
+			const copy = [...prevState.sessions];
+			copy[currentSession] = data;
 
-			return copy;
+			return {
+				sessions: copy
+			}
 		});
 	}
 
-	// maybe this should be routing
 	let body: JSX.Element;
-	switch (appState) {
+	switch (page) {
 		case 'player-setup':
-			body = <PlayerSetup startGame={startGame} />;
+			body = <PlayerSetup startNewSession={startNewSession} />;
 			break;
 		case 'history':
 		case 'counter':
 			body = <Session
-				history={history}
-				addToHistory={addToHistory}
-				initialStates={counterContexts}
-				counterCtxs={counterContexts}
+				data={appState.sessions[currentSession]}
+				setData={updateSession}
 			/>;
 			break;
 	}
