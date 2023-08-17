@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import './Session.css';
-import { CounterContext, History } from '../app';
+import { CounterContext, History, Page } from '../app';
 import { Dial } from '../components/Dial';
 
 export interface SessionState {
@@ -11,10 +11,11 @@ export interface SessionState {
 
 export interface SessionProps {
     data: SessionState,
-    setData: (data: SessionState) => void
+    setData: (data: SessionState) => void,
+    setPage: (page: Page) => void
 }
 
-export function Session({ data, setData }: SessionProps) {
+export function Session({ data, setData, setPage }: SessionProps) {
 
     const addToHistory = (index: number, total: number) => {
         // at this point the history has already been changed
@@ -31,6 +32,8 @@ export function Session({ data, setData }: SessionProps) {
     }
     
     const undo = () => {
+        if (data.history.length < 2) return;
+
         const copy = [...data.history];
         copy.pop();
 
@@ -43,7 +46,8 @@ export function Session({ data, setData }: SessionProps) {
 
     return <main id='session'>
         <div className="controls">
-            <button className='home'>🏠</button>
+            <button className='home' onClick={() => setPage('player-setup')}>🏠</button>
+            <button className='history' onClick={() => setPage('history')}>📚</button>
             <button className='undo' onClick={undo}>↺</button>
         </div>
         <Dial

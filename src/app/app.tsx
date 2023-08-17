@@ -2,6 +2,7 @@ import * as React from "react";
 import { PlayerSetup } from "./pages/PlayerSetup";
 import { Color } from "./util/color";
 import { Session, SessionState } from "./pages/Session";
+import { History } from "./pages/History";
 import "./index.css";
 
 export type History = number[][]
@@ -60,10 +61,17 @@ export function App() {
 			body = <PlayerSetup startNewSession={startNewSession} />;
 			break;
 		case 'history':
+			body = <History
+				data={appState.sessions[currentSession]}
+				setData={updateSession}
+				setPage={setPage}
+			/>
+			break;
 		case 'counter':
 			body = <Session
 				data={appState.sessions[currentSession]}
 				setData={updateSession}
+				setPage={setPage}
 			/>;
 			break;
 	}

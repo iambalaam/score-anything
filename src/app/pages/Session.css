@@ -1,0 +1,11 @@
+.controls {
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+}
+
+.controls * {
+    font-size: 4vmin;
+    width: 8vmin;
+    height: 7vmin;
+}

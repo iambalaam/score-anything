@@ -45,6 +45,8 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 	const offsets = calculateCounterOffsets(counterCtxs.length);
 
 	// Really don't like this useEffect
+	// Used to recalibrate localState when appState changes.
+	// TODO: add nice animation tweening
 	React.useEffect(() => {
 		setLocalTotals(totals);
 	}, [totals]);
