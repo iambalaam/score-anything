@@ -36,11 +36,11 @@ export function App() {
 	const [currentSession, setCurrentSession] = React.useState<number>(-1);
 	const [page, setPage] = React.useState<Page>('main');
 
-	const startNewSession = (ctxs: CounterContext[]) => {
+	const startNewSession = (session: SessionState) => {
 		setAppState({
 			sessions: [
 				...appState.sessions,
-				{ counters: ctxs, history: [Array(ctxs.length).fill(0).map((_, i) => ctxs[i].start)] }
+				session
 			]
 		});
 		setCurrentSession(appState.sessions.length);

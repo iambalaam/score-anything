@@ -5,12 +5,21 @@
 
 .session {
     position: relative;
-    display: inline-block;
     width: 30vmin;
     height: 30vmin;
-    border-radius: 4vmin;
+    border-radius: 2vmin;
     margin: 2vmin;
-    background-color: #ccc;
+    background-color: #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.session .name {
+    padding: 1vmin;
+    font-family: sans-serif;
+    text-align: left;
+    font-size: 4vmin;
 }
 
 .session .delete {
@@ -28,4 +37,7 @@
 
 .session .scores {
     overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+    font-size: 6vmin;
 }

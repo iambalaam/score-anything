@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { AppState, Page } from '../app';
 import { SessionState } from './Session';
-import './SessionSelect.css';
 import { HSL2String } from '../util/color';
+import './SessionSelect.css';
 
 interface SessionViewProps extends SessionState {
     selectSession: () => void,
     deleteSession: () => void
 }
 
-function SessionView({ counters, history, selectSession, deleteSession }: SessionViewProps) {
+function SessionView({ name, counters, history, selectSession, deleteSession }: SessionViewProps) {
 
     const handleDelete: React.MouseEventHandler = (e) => {
         e.preventDefault();
@@ -26,6 +26,7 @@ function SessionView({ counters, history, selectSession, deleteSession }: Sessio
     return (
         <div className='session' onClick={handleSelect}>
             <span className="delete" onClick={handleDelete}>X</span>
+            <div className='name'>{name}</div>
             <div className="scores">
                 {totals.map((total, i) => <span className='score' key={i} style={{ color: HSL2String(counters[i].color) }}>{total}</span>)}
             </div>

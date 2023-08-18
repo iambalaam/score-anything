@@ -5,6 +5,7 @@ import { CounterContext, History, Page } from '../app';
 import { Dial } from '../components/Dial';
 
 export interface SessionState {
+    name: string
     counters: CounterContext[]
     history: History
 }
@@ -26,7 +27,7 @@ export function Session({ data, setData, setPage }: SessionProps) {
         copy.push(nextEntry);
 
         setData({
-            counters: data.counters,
+            ...data,
             history: copy
         });
     }
@@ -38,7 +39,7 @@ export function Session({ data, setData, setPage }: SessionProps) {
         copy.pop();
 
         setData({
-            counters: data.counters,
+            ...data,
             history: copy
         })
     }

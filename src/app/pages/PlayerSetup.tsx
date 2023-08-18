@@ -3,15 +3,16 @@ import { CounterContext } from '../app';
 import { createDefaultCounterContexts } from '../util/setup';
 import './PlayerSetup.css';
 import { HSL2String } from '../util/color';
+import { SessionState } from './Session';
 
 export interface PlayerSetupProps {
-    startNewSession: (counters: CounterContext[]) => void
+    startNewSession: (session: SessionState) => void
 }
 
 export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
     const [custom, setCustom] = React.useState(false);
     const [playerCount, setPlayerCount] = React.useState(0);
-    const [counterContexts, setCounterContexts] = React.useState<CounterContext[]>([]);
+    const [sessionState, setSessionState] = React.useState<SessionState>({ counters: [], history: [], name: '' });
 
     const handleCustom: React.MouseEventHandler = (e) => {
         e.preventDefault();
@@ -20,23 +21,43 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
 
     const handleSubmit: React.MouseEventHandler = (e) => {
         e.preventDefault();
-        startNewSession(counterContexts);
+        startNewSession({
+            ...sessionState,
+            history: [Array(sessionState.counters.length)
+                .fill(0)
+                .map((_, i) => sessionState.counters[i].start)]
+        });
+    }
+
+    const handleGameNameChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+        e.preventDefault();
+        const name = e.target.value;
+        setSessionState({
+            ...sessionState,
+            name
+        })
     }
 
     const handleNameChange = (i: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         const name = e.target.value;
-        const newCtxs = [...counterContexts];
+        const newCtxs = [...sessionState.counters];
         newCtxs[i] = { ...newCtxs[i], name };
-        setCounterContexts(newCtxs);
+        setSessionState({
+            ...sessionState,
+            counters: newCtxs
+        });
     }
 
     const handleScoreChange = (i: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         const score = parseInt(e.target.value, 10);
-        const newCtxs = [...counterContexts];
+        const newCtxs = [...sessionState.counters];
         newCtxs[i] = { ...newCtxs[i], start: score };
-        setCounterContexts(newCtxs);
+        setSessionState({
+            ...sessionState,
+            counters: newCtxs
+        });
     }
 
     const updatePlayerCount = (newPlayerCount: number) => {
@@ -44,11 +65,15 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
         const defaultCtxs: CounterContext[] = createDefaultCounterContexts(newPlayerCount);
         newCtxs = defaultCtxs.map((ctx, i) => ({
             color: ctx.color,
-            name: counterContexts[i]?.name || ctx.name,
-            start: counterContexts[i]?.start || ctx.start
+            name: sessionState.counters[i]?.name || ctx.name,
+            start: sessionState.counters[i]?.start || ctx.start
         }));
 
-        setCounterContexts(newCtxs);
+        setSessionState({
+            ...sessionState,
+            counters: newCtxs,
+            name: `${newPlayerCount} player game`
+        });
         setPlayerCount(newPlayerCount);
     }
 
@@ -73,8 +98,12 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
             </div>
 
             <div className={custom ? 'custom' : 'custom hidden'}>
+                <input type='text' id='game-name'
+                    onChange={handleGameNameChange} value={sessionState.name}
+                />
+
                 {Array(playerCount).fill(0).map((_, player) => {
-                    const { color, start, name } = counterContexts[player];
+                    const { color, start, name } = sessionState.counters[player];
                     return (
                         <div className='player' key={`custom-${player}`}>
 
