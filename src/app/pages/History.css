@@ -2,3 +2,16 @@
     display: grid;
     width: 100%;
 }
+
+.score {
+    position: relative;
+}
+
+.score::after {
+    content: attr(data-diff);
+    position: absolute;
+    color: currentColor;
+    top: 9vmin;
+    right: -1vmin;
+    font-size: 3vmin;
+}
