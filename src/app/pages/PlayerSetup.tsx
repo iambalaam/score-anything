@@ -20,7 +20,23 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
 
     const handleSubmit: React.MouseEventHandler = (e) => {
         e.preventDefault();
-        startNewSession(createDefaultCounterContexts(playerCount))
+        startNewSession(counterContexts);
+    }
+
+    const handleNameChange = (i: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const name = e.target.value;
+        const newCtxs = [...counterContexts];
+        newCtxs[i] = { ...newCtxs[i], name };
+        setCounterContexts(newCtxs);
+    }
+
+    const handleScoreChange = (i: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        const score = parseInt(e.target.value, 10);
+        const newCtxs = [...counterContexts];
+        newCtxs[i] = { ...newCtxs[i], start: score };
+        setCounterContexts(newCtxs);
     }
 
     const updatePlayerCount = (newPlayerCount: number) => {
@@ -57,19 +73,30 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
             </div>
 
             <div className={custom ? 'custom' : 'custom hidden'}>
-                {Array(playerCount).fill(0).map((_, player) =>
-                    <div className='player' key={`custom-${player}`}>
+                {Array(playerCount).fill(0).map((_, player) => {
+                    const { color, start, name } = counterContexts[player];
+                    return (
+                        <div className='player' key={`custom-${player}`}>
 
-                        <span className="color" style={{ backgroundColor: HSL2String(counterContexts[player].color) }}></span>
+                            <span className="color" style={{ backgroundColor: HSL2String(color) }}></span>
 
-                        <label htmlFor={`player-${player + 1}-name`}>name:</label>
-                        <input type="text" name="" id={`player-${player + 1}-name`} placeholder={`player ${player + 1}`} />
+                            <label htmlFor={`player-${player + 1}-name`}>name:</label>
+                            <input type="text" name="" id={`player-${player + 1}-name`} placeholder={`player ${player + 1}`}
+                                value={name}
+                                onChange={handleNameChange(player)}
+                            />
 
+                            <label htmlFor={`player-${player + 1}-score`}>score:</label>
+                            <input type='number' step='1' id={`player-${player + 1}-score`}
+                                // Weird issue to remove leading zeros
+                                // TODO: fix for negative numbers
+                                value={start.toString().replace(/^0+{.*}/, '$1')}
+                                onChange={handleScoreChange(player)}
+                            />
 
-                        <label htmlFor={`player-${player + 1}-score`}>score:</label>
-                        <input type='number' step='1' id={`player-${player + 1}-score`} />
-                    </div>
-                )}
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="footer">
