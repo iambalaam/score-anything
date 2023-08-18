@@ -1,6 +1,6 @@
 import * as React from "react";
 import { PlayerSetup } from "./pages/PlayerSetup";
-import { Color, HSL } from "./util/color";
+import { HSL } from "./util/color";
 import { Session, SessionState } from "./pages/Session";
 import { History } from "./pages/History";
 import "./index.css";
@@ -12,6 +12,7 @@ export type History = number[][]
 export interface CounterContext {
 	color: HSL,
 	name?: string
+	start: number
 }
 export interface ColorContext {
 	backgroundColor: HSL;
@@ -39,11 +40,22 @@ export function App() {
 		setAppState({
 			sessions: [
 				...appState.sessions,
-				{ counters: ctxs, history: [Array(ctxs.length).fill(0)] }
+				{ counters: ctxs, history: [Array(ctxs.length).fill(0).map((_, i) => ctxs[i].start)] }
 			]
 		});
 		setCurrentSession(appState.sessions.length);
 		setPage('counter');
+	}
+
+	const deleteSession = (index: number) => {
+		console.log(appState);
+		const copy = [...appState.sessions];
+		copy.splice(index, 1);
+		console.log(copy);
+		setAppState({
+			...appState,
+			sessions: copy
+		});
 	}
 
 	const updateSession = (data: SessionState) => {
@@ -70,6 +82,7 @@ export function App() {
 		case 'session-select':
 			body = <SessionSelect
 				appState={appState}
+				deleteSession={deleteSession}
 				setCurrentSession={setCurrentSession}
 				setPage={setPage}
 			/>;

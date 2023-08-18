@@ -5,7 +5,8 @@ export function createDefaultCounterContexts(playerCount: number): CounterContex
     return calculateCounterOffsets(playerCount)
         .map((angle) => ({
             color: { h: angle, s: 60, l: 60 } as HSL,
-            total: 0
+            start: 0,
+            name: ''
         }));
 }
 

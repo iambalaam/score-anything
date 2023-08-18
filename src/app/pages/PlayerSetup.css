@@ -5,70 +5,71 @@ h1 {
 }
 
 #player-setup {
-    padding: 10vmin;
+    padding: 5vmin;
     width: 100%;
     height: 100%;
 }
 
-.player-count {
-    display: grid;
-    gap: 2vmin;
+form input[type=radio] {
+    display: none;
 }
 
-/* display is portrait */
-@media (max-aspect-ratio: 1/1) {
-    .player-count {
-        grid-template-columns: 1fr 1fr
-    }
+.setup input:checked+label {
+    color: red;
 }
 
-/* display is landscape */
-@media (min-aspect-ratio: 1/1) {
-    .player-count {
-        grid-template-columns: 1fr 1fr 1fr 1fr
-    }
+.setup {
+    font-family: sans-serif;
 }
 
-.player-count button {
-    border: 1px solid #ccc;
-    border-radius: 2vmin;
-}
-
-.player-count .count {
-    font-size: 10vmin;
-    background-color: #ddd;
-}
-
-.player-count .custom {
-    border-radius: 2vmin;
-    border: 1px solid #ccc;
-    background-color: #eee;
-    grid-column: 1/-1;
+/* Player count */
+.setup .players {
     display: flex;
-    align-items: center;
+    flex-direction: row;
+}
+
+.setup .player-count {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 2vmin;
+}
+
+/* Custom */
+.setup .custom {
+    overflow: hidden;
+    transition: 400ms;
+    max-height: 100%;
+}
+
+.setup .custom.hidden {
+    max-height: 0;
+}
+
+.setup .custom .player {
+    display: flex;
+    justify-content: space-between;
+    font-size: 4vmin;
     padding: 1vmin;
 }
 
-.player-count .custom * {
-    font-size: 4vmin;
+.setup .custom .color {
+    display: inline-block;
+    width: 6vmin;
+    height: 6vmin;
+    border-radius: 1vmin;
 }
 
-.player-count .custom .text {
-    margin: 0 2vmin;
+/* Footer buttons */
+.setup .footer {
+    display: flex;
+    height: 8vmin;
 }
 
-.player-count .custom .value {
-    font-size: 10vmin;
-    width: 16vmin;
+.setup .footer button {
+    min-width: 10vmin;
+    margin: 1vmin;
 }
 
-.player-count .custom #range {
-    flex-grow: 2;
-    max-width: 28vw;
-    /* fixes small screen overflow */
-}
-
-.player-count .custom button {
-    height: 100%;
-    flex-grow: 1;
+.setup .footer button[type=submit] {
+    flex-grow: 3;
 }

@@ -4,11 +4,28 @@
 }
 
 .session {
+    position: relative;
     display: inline-block;
     width: 30vmin;
     height: 30vmin;
     border-radius: 4vmin;
-    overflow: hidden;
     margin: 2vmin;
     background-color: #ccc;
+}
+
+.session .delete {
+    position: absolute;
+    top: -1vmin;
+    right: -1vmin;
+    width: 4vmin;
+    height: 4vmin;
+    border-radius: 50%;
+    background-color: indianred;
+    color: white;
+    font-size: 3.5vmin;
+    cursor: pointer;
+}
+
+.session .scores {
+    overflow: hidden;
 }
