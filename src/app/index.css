@@ -29,6 +29,19 @@ body {
 	overscroll-behavior-y: contain;
 }
 
+input[type=text],
+input[type=number] {
+	padding: 0.5vmin 1vmin;
+	font-size: 4vmin;
+	border: none;
+	border-radius: 2vmin;
+	background-color: #eee;
+}
+
 button {
 	cursor: pointer;
+	font-family: sans-serif;
+	font-size: 8vmin;
+	border-radius: 2vmin;
+	padding: 2vmin
 }

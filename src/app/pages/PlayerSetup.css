@@ -1,7 +1,7 @@
 h1 {
     text-align: left;
-    margin: 4vmin;
-    font-size: 4vmin;
+    margin: 2vmin;
+    font-size: 6vmin;
 }
 
 #player-setup {
@@ -29,6 +29,7 @@ form input[type=radio] {
 }
 
 .setup .player-count {
+    margin: 1vmin;
     flex-grow: 1;
     border: 1px solid #ccc;
     border-radius: 2vmin;
@@ -45,24 +46,41 @@ form input[type=radio] {
     max-height: 0;
 }
 
+.setup #game-name {
+    width: 100%;
+    margin: 1vmin;
+    font-size: 6vmin;
+}
+
 .setup .custom .player {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 4vmin;
-    padding: 1vmin;
+    width: 100%;
+}
+
+.setup .custom .player * {
+    margin: 1vmin;
 }
 
 .setup .custom .color {
     display: inline-block;
-    width: 6vmin;
     height: 6vmin;
+    width: 6vmin;
+    min-width: 6vmin;
     border-radius: 1vmin;
+}
+
+.setup .custom input {
+    flex-grow: 1;
+    width: 0;
+    /* Allows inputs to grow with flexbox */
 }
 
 /* Footer buttons */
 .setup .footer {
     display: flex;
-    height: 8vmin;
 }
 
 .setup .footer button {

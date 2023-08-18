@@ -38,6 +38,6 @@
 .session .scores {
     overflow: hidden;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     font-size: 6vmin;
 }
