@@ -71,8 +71,8 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 
 	}
 	const handleUp = (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
-		if (e.cancelable) e.preventDefault();
 		if (!eventRef.current.isDown) return;
+		if (e.cancelable) e.preventDefault();
 
 		document.body.classList.remove(DRAGGING_CLASS);
 		eventRef.current.isDown = false;
