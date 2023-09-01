@@ -4,7 +4,7 @@ export function animate(
     easing: (x: number) => number = (x) => x // linear
 ) {
     let lastTimestamp = 0;
-    let cumMs = 0
+    let cumMs = 0;
 
     function loop(timestamp: DOMHighResTimeStamp) {
         if (lastTimestamp == 0) {

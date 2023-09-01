@@ -1,47 +1,47 @@
 html {
-	height: 100%;
-	font-family: monospace;
+    height: 100%;
+    font-family: monospace;
 }
 
 main {
-	font-size: 10vmin;
-	text-align: center;
+    font-size: 10vmin;
+    text-align: center;
 }
 
 /* Disable pull down to refresh on mobile */
 html,
 body {
-	overscroll-behavior: none;
+    overscroll-behavior: none;
 }
 
 * {
-	box-sizing: border-box;
-	margin: 0;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 #root {
-	height: 100vh;
-	width: 100vw;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	overflow: hidden;
-	overscroll-behavior-y: contain;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    overscroll-behavior-y: contain;
 }
 
-input[type=text],
-input[type=number] {
-	padding: 0.5vmin 1vmin;
-	font-size: 4vmin;
-	border: none;
-	border-radius: 2vmin;
-	background-color: #eee;
+input[type='text'],
+input[type='number'] {
+    padding: 0.5vmin 1vmin;
+    font-size: 4vmin;
+    border: none;
+    border-radius: 2vmin;
+    background-color: #eee;
 }
 
 button {
-	cursor: pointer;
-	font-family: sans-serif;
-	font-size: 8vmin;
-	border-radius: 2vmin;
-	padding: 2vmin
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 8vmin;
+    border-radius: 2vmin;
+    padding: 2vmin;
 }

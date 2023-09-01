@@ -1,4 +1,4 @@
-import { getDegreesFromCenter, clamp } from "./math";
+import { getDegreesFromCenter, clamp } from './math';
 
 describe('getDegreesFromCenter()', () => {
     // All tests written in a 100x100 box
@@ -31,4 +31,4 @@ describe('clamp()', () => {
         expect(Object.is(clamp(-10, 10, +0), +0)).toBeTruthy();
         expect(Object.is(clamp(-10, 10, +0), -0)).toBeFalsy();
     });
-})
+});

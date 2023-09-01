@@ -3,10 +3,7 @@
         "outDir": "../../dist",
         "strict": true,
         "skipLibCheck": true,
-        "lib": [
-            "WebWorker",
-            "ES2015",
-        ],
+        "lib": ["WebWorker", "ES2015"],
         "target": "ES2017"
     },
     "files": ["sw.ts"]

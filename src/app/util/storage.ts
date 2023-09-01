@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 export function storeData<T>(key: string, data: T) {
     if ('localStorage' in window) {
@@ -15,7 +15,10 @@ export function getData<T>(key: string): T | null | undefined {
     }
 }
 
-export function useLocalStorage<T>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
+export function useLocalStorage<T>(
+    key: string,
+    initialValue: T
+): [T, React.Dispatch<React.SetStateAction<T>>] {
     const [data, setData] = useState<T>(() => {
         const localData = getData<T>(key);
         return localData || initialValue;

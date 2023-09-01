@@ -10,11 +10,11 @@ h1 {
     height: 100%;
 }
 
-form input[type=radio] {
+form input[type='radio'] {
     display: none;
 }
 
-.setup input:checked+label {
+.setup input:checked + label {
     color: red;
 }
 
@@ -88,6 +88,6 @@ form input[type=radio] {
     margin: 1vmin;
 }
 
-.setup .footer button[type=submit] {
+.setup .footer button[type='submit'] {
     flex-grow: 3;
 }

@@ -11,32 +11,40 @@ Score your favorite board, card, and other games with a single touch! No more hu
 Score your favorite board, card, and other games with a single touch! No more hunting for a pad and pencil, typing scores in Notes, or tapping tiny plus buttons - "Score Anything" lets any player at the table keep track of their score in a single touch!
 <br/>
 <br/>
-* Quick & Accurate Scoring
 
-    * Tally any score for any player with a single intuitive gesture
-    * Score history scoresheet with ability to undo
-    * Customizable scoring increment
-<br/>
-<br/>
-* Convenient for All
+-   Quick & Accurate Scoring
 
-    * Scores rotate to face their player no matter the seating arrangement at the table
-    * Customize player names and colors to match board game pieces
-<br/>
-<br/>
-* Keeps Track of Multiple Games
+        * Tally any score for any player with a single intuitive gesture
+        * Score history scoresheet with ability to undo
+        * Customizable scoring increment
 
-    * Game scores are saved automatically
-    * Name game sessions and switch between them with a tap
-    * Saved games remember their settings and player colors
-<br/>
-<br/>
-* Supports up to 6 Players
+    <br/>
+    <br/>
 
-    * Score yourself or designate a score keeper
-    * 24 player colors to choose from
-<br/>
-<br/>
+-   Convenient for All
+
+        * Scores rotate to face their player no matter the seating arrangement at the table
+        * Customize player names and colors to match board game pieces
+
+    <br/>
+    <br/>
+
+-   Keeps Track of Multiple Games
+
+        * Game scores are saved automatically
+        * Name game sessions and switch between them with a tap
+        * Saved games remember their settings and player colors
+
+    <br/>
+    <br/>
+
+-   Supports up to 6 Players
+
+        * Score yourself or designate a score keeper
+        * 24 player colors to choose from
+
+    <br/>
+    <br/>
 
 ## Screenshots
 
@@ -46,11 +54,11 @@ Score your favorite board, card, and other games with a single touch! No more hu
 
 ![Screenshot 3](https://raw.githubusercontent.com/iambalaam/score-anything/main/screenshots/3.png)
 
-
 ## Installation
 
-lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet 
+lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
 lorem ipsum dolor sit amet
+
 ## License
 
 Score Anything is licensed under the MIT License. See the LICENSE file for more information.
@@ -61,5 +69,5 @@ If you have any questions, comments, or suggestions, please contact me here on G
 
 ## Credits
 
-* Guy Balaam https://github.com/iambalaam
-* Steve Beecheno https://github.com/hacktinium
+-   Guy Balaam https://github.com/iambalaam
+-   Steve Beecheno https://github.com/hacktinium

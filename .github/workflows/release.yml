@@ -1,42 +1,42 @@
 name: release
 
 on:
-  push:
-    branches: [main, debug-actions]
-  pull_request:
-    branches: [main]
-    
+    push:
+        branches: [main, debug-actions]
+    pull_request:
+        branches: [main]
+
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  release:
-    concurrency: ci-${{ github.ref }}
-    runs-on: ubuntu-latest
+    release:
+        concurrency: ci-${{ github.ref }}
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout 🌐
-        uses: actions/checkout@v3
+        steps:
+            - name: Checkout 🌐
+              uses: actions/checkout@v3
 
-      - name: Setup Node ⬢
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'npm'
+            - name: Setup Node ⬢
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18.x
+                  cache: 'npm'
 
-      - name: Install npm dependencies 📦
-        run: npm ci
+            - name: Install npm dependencies 📦
+              run: npm ci
 
-      - name: Unit test 🔍
-        run: npm run test:unit
+            - name: Unit test 🔍
+              run: npm run test:unit
 
-      - name: Build 🏗️ 
-        run: npm run build
+            - name: Build 🏗️
+              run: npm run build
 
-      - name: Integ test 🔍
-        run: npm run test:integ
+            - name: Integ test 🔍
+              run: npm run test:integ
 
-      - name: Release 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: dist
+            - name: Release 🚀
+              uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  folder: dist
