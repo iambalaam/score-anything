@@ -1,6 +1,10 @@
 #main {
-    height: 60vh;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+}
+
+#main button, #main button * { 
+    font-size: 6vmin;
+    margin: 2vmin;
 }
