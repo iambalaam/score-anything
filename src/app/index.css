@@ -45,3 +45,8 @@ button {
     border-radius: 2vmin;
     padding: 2vmin;
 }
+
+/* MUI Icon size */
+.controls .MuiSvgIcon-root {
+    font-size: 6vmin;
+}

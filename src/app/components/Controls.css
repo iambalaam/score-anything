@@ -1,0 +1,11 @@
+.controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 2vmin;
+    z-index: 1000;
+}
+
+.toggle {
+    
+}

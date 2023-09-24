@@ -7,6 +7,11 @@ import './index.css';
 import { useLocalStorage } from './util/storage';
 import { Main } from './pages/Main';
 import { SessionSelect } from './pages/SessionSelect';
+import { Controls, Toggle } from './components/Controls';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
+import UndoRounded from '@mui/icons-material/UndoRounded';
+import IconButton from '@mui/material/IconButton';
 
 export type History = number[][];
 export interface CounterContext {
@@ -26,6 +31,11 @@ export const ColorContext = React.createContext<ColorContext>(initialColors);
 
 export type Page = 'main' | 'session-select' | 'player-setup' | 'counter' | 'history';
 
+export interface PageProps {
+    setPage: (page: Page) => void;
+    setControls: (controls: JSX.Element) => void;
+}
+
 export interface AppState {
     sessions: SessionState[];
 }
@@ -37,6 +47,7 @@ export function App() {
 
     const [currentSession, setCurrentSession] = React.useState<number>(-1);
     const [page, setPage] = React.useState<Page>('main');
+    const [controls, setConrols] = React.useState<JSX.Element>();
 
     const startNewSession = (session: SessionState) => {
         setAppState({
@@ -68,40 +79,113 @@ export function App() {
         });
     };
 
+    const undo = () => {
+        const data = appState.sessions[currentSession];
+        if (data.history.length < 2) return;
+
+        const copy = [...data.history];
+        copy.pop();
+
+        updateSession({
+            ...data,
+            history: copy
+        });
+    };
+
     let body: JSX.Element;
     switch (page) {
         case 'main':
-            body = <Main setPage={setPage} />;
+            body = (
+                <>
+                    <Controls setPage={setPage} />
+                    <Main setPage={setPage} />
+                </>
+            );
             break;
         case 'player-setup':
             body = <PlayerSetup startNewSession={startNewSession} />;
             break;
         case 'session-select':
             body = (
-                <SessionSelect
-                    appState={appState}
-                    deleteSession={deleteSession}
-                    setCurrentSession={setCurrentSession}
-                    setPage={setPage}
-                />
+                <>
+                    <Controls setPage={setPage} />
+                    <SessionSelect
+                        appState={appState}
+                        deleteSession={deleteSession}
+                        setCurrentSession={setCurrentSession}
+                        setPage={setPage}
+                    />
+                </>
             );
             break;
         case 'counter':
             body = (
-                <Session
-                    data={appState.sessions[currentSession]}
-                    setData={updateSession}
-                    setPage={setPage}
-                />
+                <>
+                    <Controls
+                        setPage={setPage}
+                        nav={
+                            <Toggle
+                                off={
+                                    <IconButton onClick={undo}>
+                                        <DataUsageRoundedIcon />
+                                    </IconButton>
+                                }
+                                on={
+                                    <IconButton onClick={undo}>
+                                        <HistoryRoundedIcon />
+                                    </IconButton>
+                                }
+                                onToggle={(on) => setPage(on ? 'counter' : 'history')}
+                            />
+                        }
+                        actions={
+                            <IconButton onClick={undo}>
+                                <UndoRounded />
+                            </IconButton>
+                        }
+                    />
+                    <Session
+                        data={appState.sessions[currentSession]}
+                        setData={updateSession}
+                        setPage={setPage}
+                        setControls={setConrols}
+                    />
+                </>
             );
             break;
         case 'history':
             body = (
-                <History
-                    data={appState.sessions[currentSession]}
-                    setData={updateSession}
-                    setPage={setPage}
-                />
+                <>
+                    <Controls
+                        setPage={setPage}
+                        nav={
+                            <Toggle
+                                off={
+                                    <IconButton onClick={undo}>
+                                        <DataUsageRoundedIcon />
+                                    </IconButton>
+                                }
+                                on={
+                                    <IconButton onClick={undo}>
+                                        <HistoryRoundedIcon />
+                                    </IconButton>
+                                }
+                                onToggle={(on) => setPage(on ? 'counter' : 'history')}
+                            />
+                        }
+                        actions={
+                            <IconButton onClick={undo}>
+                                <UndoRounded />
+                            </IconButton>
+                        }
+                    />
+                    <History
+                        data={appState.sessions[currentSession]}
+                        setData={updateSession}
+                        setPage={setPage}
+                        setControls={setConrols}
+                    />
+                </>
             );
             break;
         default:

@@ -9,17 +9,6 @@ export function History({ data, setPage }: SessionProps) {
 
     return (
         <main id="history">
-            <div className="controls">
-                <button className="home" onClick={() => setPage('main')}>
-                    🏠
-                </button>
-                <button className="history" onClick={() => setPage('history')}>
-                    📚
-                </button>
-                <button className="undo" onClick={() => setPage('counter')}>
-                    ↺
-                </button>
-            </div>
             <div id="grid" style={{ gridTemplateColumns }}>
                 {[...data.history]
                     .map((entry, i) =>
