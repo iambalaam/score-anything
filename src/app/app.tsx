@@ -58,14 +58,15 @@ export function App() {
     };
 
     const deleteSession = (index: number) => {
-        console.log(appState);
         const copy = [...appState.sessions];
         copy.splice(index, 1);
-        console.log(copy);
         setAppState({
             ...appState,
             sessions: copy
         });
+        if (copy.length === 0) {
+            setPage('main');
+        }
     };
 
     const updateSession = (data: SessionState) => {
@@ -98,7 +99,7 @@ export function App() {
             body = (
                 <>
                     <Controls setPage={setPage} />
-                    <Main setPage={setPage} />
+                    <Main setPage={setPage} hasPreviousGames={appState.sessions.length > 0} />
                 </>
             );
             break;

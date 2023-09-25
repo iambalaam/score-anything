@@ -6,10 +6,11 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { Page } from '../app';
 
 export interface MainProps {
+    hasPreviousGames: boolean;
     setPage: (page: Page) => void;
 }
 
-export function Main({ setPage }: MainProps) {
+export function Main({ hasPreviousGames, setPage }: MainProps) {
     return (
         <main id="main">
             <Button
@@ -20,6 +21,7 @@ export function Main({ setPage }: MainProps) {
                 <span className="text">New Game</span>
             </Button>
             <Button
+                disabled={!hasPreviousGames}
                 endIcon={<FolderOpenIcon />}
                 variant="contained"
                 onClick={() => setPage('session-select')}
