@@ -13,18 +13,18 @@ export function Main({ setPage }: MainProps) {
     return (
         <main id="main">
             <Button
-                startIcon={<CreateNewFolderIcon />}
+                endIcon={<CreateNewFolderIcon />}
                 variant="contained"
                 onClick={() => setPage('player-setup')}
             >
-                New Game
+                <span className="text">New Game</span>
             </Button>
             <Button
-                startIcon={<FolderOpenIcon />}
+                endIcon={<FolderOpenIcon />}
                 variant="contained"
                 onClick={() => setPage('session-select')}
             >
-                Previous Games
+                <span className="text">Previous Games</span>
             </Button>
         </main>
     );

@@ -4,7 +4,17 @@
     justify-content: space-evenly;
 }
 
-#main button, #main button * { 
+#main button { 
+    justify-content: space-between;
     font-size: 6vmin;
     margin: 2vmin;
+}
+
+#main button * { 
+    font-size: 6vmin;
+    margin: 2vmin;
+}
+
+#main button .text {
+    flex-grow: 1;
 }
