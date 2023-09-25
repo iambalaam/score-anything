@@ -23,5 +23,11 @@ export function toAbsCeil(x: number) {
     return -toAbsFloor(-x);
 }
 export function toAbsFloorSignedIntString(x: number) {
-    return (x > 0 ? '+' : '') + toAbsFloor(x);
+    const absFloor = toAbsFloor(x);
+    const str = absFloor.toString();
+    if (str.startsWith('-') || str.startsWith('+')) {
+        return str;
+    } else {
+        return x >= 0 ? `+${absFloor}` : `-${absFloor}`;
+    }
 }
