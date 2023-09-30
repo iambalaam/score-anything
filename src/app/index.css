@@ -41,12 +41,15 @@ input[type='number'] {
 button {
     cursor: pointer;
     font-family: sans-serif;
-    font-size: 8vmin;
     border-radius: 2vmin;
     padding: 2vmin;
 }
 
 /* MUI Icon size */
 .controls .MuiSvgIcon-root {
+    font-size: 6vmin;
+}
+
+#root .MuiButtonBase-root {
     font-size: 6vmin;
 }

@@ -104,7 +104,12 @@ export function App() {
             );
             break;
         case 'player-setup':
-            body = <PlayerSetup startNewSession={startNewSession} />;
+            body = (
+                <>
+                    <Controls setPage={setPage} />
+                    <PlayerSetup startNewSession={startNewSession} />
+                </>
+            );
             break;
         case 'session-select':
             body = (

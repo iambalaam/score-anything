@@ -69,7 +69,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ counterCtxs, setPlayer
 
         const deltaAngle = eventRef.current.onUpAngle - eventRef.current.onDownAngle;
         animate(
-            1000,
+            500,
             (t01) => {
                 const newAngle = deltaAngle * (1 - t01);
                 setAngle(newAngle);

@@ -77,7 +77,6 @@
 
 .color-picker::after {
     content: "";
-    transition: 300ms;
     background-color: currentColor;
     opacity: 1;
     width: 100%;

@@ -5,6 +5,7 @@ import './PlayerSetup.css';
 import { SessionState } from './Session';
 import { ColorPicker } from '../components/ColorPicker';
 import { HSL } from '../util/color';
+import { Button } from '@mui/material';
 
 export interface PlayerSetupProps {
     startNewSession: (session: SessionState) => void;
@@ -67,9 +68,23 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
         });
     };
 
+    const start = () =>
+        startNewSession({
+            ...sessionState,
+            history: [
+                Array(sessionState.counters.length)
+                    .fill(0)
+                    .map((_, i) => sessionState.counters[i].start)
+            ]
+        });
+
     return (
         <main id="player-setup">
+            <div>2 player game</div>
             <ColorPicker counterCtxs={sessionState.counters} setPlayerColor={setPlayerColor} />
+            <Button variant="contained" onClick={start}>
+                Start
+            </Button>
         </main>
     );
 }
