@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { animate } from '../util/animate';
 import { calculateCounterOffsets } from '../util/setup';
-import { getDegreesFromCenter, toAbsFloor, toAbsFloorSignedIntString } from '../util/math';
-import { HapticValue } from './HapticValue';
+import { getDegreesFromCenter } from '../util/math';
 
 import { Counter } from './Counter';
 import './Dial.css';
+import './ColorPicker.css';
 import { ColorContext, CounterContext } from '../app';
-import { HSL2String } from '../util/color';
+import { HSL, HSL2String } from '../util/color';
 import { getEventCoords } from '../util/events';
 
-const DEGREES2POINTS = 30;
 const DRAGGING_CLASS = 'dragging';
 
 interface EventHandlerRef {
@@ -20,7 +19,6 @@ interface EventHandlerRef {
     onMoveAngle: number;
     onUpAngle: number;
     enabled: boolean;
-    prevTotals: number[];
 }
 const initialHandlerRef = {
     hasFocus: -1,
@@ -31,29 +29,17 @@ const initialHandlerRef = {
     onMoveAngle: 0
 };
 
-export interface DialProps {
+export interface ColorPickerProps {
     counterCtxs: CounterContext[];
-    totals: number[];
-    addToHistory: (index: number, total: number) => void;
+    setPlayerColor: (index: number, color: HSL) => void;
 }
 
-export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory }) => {
-    const eventRef = React.useRef<EventHandlerRef>({
-        ...initialHandlerRef,
-        prevTotals: totals
-    });
-    const [localTotals, setLocalTotals] = React.useState(totals);
+export const ColorPicker: React.FC<ColorPickerProps> = ({ counterCtxs, setPlayerColor }) => {
+    const eventRef = React.useRef<EventHandlerRef>(initialHandlerRef);
     const [angle, setAngle] = React.useState(0);
     const [hasFocus, setFocus] = React.useState(-1);
 
     const offsets = calculateCounterOffsets(counterCtxs.length);
-
-    // Really don't like this useEffect
-    // Used to recalibrate localState when appState changes.
-    // TODO: add nice animation tweening
-    React.useEffect(() => {
-        setLocalTotals(totals);
-    }, [totals]);
 
     const handleDown =
         (index: number) => (e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
@@ -80,33 +66,19 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
         document.body.classList.remove(DRAGGING_CLASS);
         eventRef.current.isDown = false;
         eventRef.current.enabled = false;
-        eventRef.current.prevTotals = [...totals];
 
-        const i = eventRef.current.hasFocus;
         const deltaAngle = eventRef.current.onUpAngle - eventRef.current.onDownAngle;
-        const deltaPoints = deltaAngle / DEGREES2POINTS;
         animate(
             1000,
             (t01) => {
                 const newAngle = deltaAngle * (1 - t01);
-                const newPoints = toAbsFloor(deltaPoints) - toAbsFloor(deltaPoints * (1 - t01));
-                const newTotal = eventRef.current.prevTotals[i] + newPoints;
-                const newTotals = [...totals];
-                newTotals[i] = newTotal;
-
                 setAngle(newAngle);
-                setLocalTotals(newTotals);
 
                 if (t01 === 1) {
                     // end of animation
                     eventRef.current.enabled = true;
-                    eventRef.current.prevTotals[i] = newTotals[i];
                     setAngle(0);
                     setFocus(-1);
-
-                    if (newPoints !== 0) {
-                        addToHistory(i, newTotals[i]);
-                    }
                 }
             },
             (x) => 1 - Math.pow(x - 1, 4)
@@ -119,13 +91,14 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 
         let newOnMoveAngle = getDegreesFromCenter(...getEventCoords(e));
 
-        while (Math.abs(eventRef.current.onMoveAngle - newOnMoveAngle) > 180) {
-            newOnMoveAngle += eventRef.current.onMoveAngle > newOnMoveAngle ? 360 : -360;
+        while (Math.abs(eventRef.current.onDownAngle - newOnMoveAngle) > 180) {
+            newOnMoveAngle += eventRef.current.onDownAngle > newOnMoveAngle ? 360 : -360;
         }
 
         eventRef.current.onMoveAngle = newOnMoveAngle;
         eventRef.current.onUpAngle = newOnMoveAngle;
         setAngle(newOnMoveAngle - eventRef.current.onDownAngle);
+        setPlayerColor(hasFocus, { h: angle + offsets[hasFocus], s: 60, l: 60 });
     };
 
     function setupEventListeners() {
@@ -144,62 +117,48 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
     React.useEffect(() => {
         setupEventListeners();
         return cleanupEventListeners;
-    }, [totals, addToHistory]);
+    }, [counterCtxs, hasFocus]);
 
     const currentColor = hasFocus !== -1 ? HSL2String(counterCtxs[hasFocus].color) : 'transparent';
-
+    const dragging = hasFocus !== -1;
     const { backgroundColor, trackColor } = React.useContext(ColorContext);
 
     return (
-        <main>
-            <div className="totals">
-                {counterCtxs.map(({ color }, i) => (
-                    <span
-                        key={HSL2String(color)}
-                        style={{
-                            color: HSL2String(color),
-                            width: `${100 / counterCtxs.length}%`
-                        }}
-                    >
-                        {localTotals[i]}
-                    </span>
-                ))}
-            </div>
-            <div className="dial" style={{ backgroundColor: HSL2String(trackColor) }}>
-                {counterCtxs.map((counter, i) =>
-                    hasFocus === i ? (
-                        <Counter
-                            key={HSL2String(counter.color)}
-                            hasFocus={true}
-                            onDown={handleDown(i)}
-                            color={counter.color}
-                            angle={angle}
-                            offset={offsets[i]}
-                        />
-                    ) : (
-                        <Counter
-                            key={HSL2String(counter.color)}
-                            hasFocus={false}
-                            onDown={handleDown(i)}
-                            color={counter.color}
-                            angle={0}
-                            offset={offsets[i]}
-                        />
-                    )
-                )}
+        <div
+            className={`color-picker dial ${dragging ? 'dragging' : ''}`}
+            style={{ color: HSL2String(trackColor) }}
+        >
+            {counterCtxs.map((counter, i) =>
+                hasFocus === i ? (
+                    <Counter
+                        key={HSL2String(counter.color)}
+                        hasFocus={true}
+                        onDown={handleDown(i)}
+                        color={counter.color}
+                        angle={angle}
+                        offset={offsets[i]}
+                        tail={false}
+                    />
+                ) : (
+                    <Counter
+                        key={HSL2String(counter.color)}
+                        hasFocus={false}
+                        onDown={handleDown(i)}
+                        color={counter.color}
+                        angle={0}
+                        offset={offsets[i]}
+                        tail={false}
+                    />
+                )
+            )}
 
-                <div
-                    className="dial--cover"
-                    style={{
-                        color: currentColor,
-                        backgroundColor: HSL2String(backgroundColor)
-                    }}
-                >
-                    {angle != 0 && (
-                        <HapticValue value={toAbsFloorSignedIntString(angle / DEGREES2POINTS)} />
-                    )}
-                </div>
-            </div>
-        </main>
+            <div
+                className="dial--cover"
+                style={{
+                    color: currentColor,
+                    backgroundColor: HSL2String(backgroundColor)
+                }}
+            />
+        </div>
     );
 };

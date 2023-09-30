@@ -11,8 +11,16 @@ interface CounterProps {
     angle: number;
     offset: number;
     onDown: (e: React.MouseEvent | React.TouchEvent) => void;
+    tail?: boolean;
 }
-export const Counter: React.FC<CounterProps> = ({ hasFocus, color, angle, offset, onDown }) => {
+export const Counter: React.FC<CounterProps> = ({
+    hasFocus,
+    color,
+    angle,
+    offset,
+    onDown,
+    tail = true
+}) => {
     const center = 'translate(-50%, -50%)';
     const toEdge = 'translateY(-35vmin)';
     const startSemiCircle =
@@ -21,23 +29,38 @@ export const Counter: React.FC<CounterProps> = ({ hasFocus, color, angle, offset
             : `linear-gradient(270deg, ${HSL2String(darken(color, angle))} 52%, transparent 52%)`;
     const extraAngle = angle > 360 ? angle - 360 : angle < -360 ? angle + 360 : 0;
 
-    return (
-        <>
-            <div
-                className="counter"
-                style={{
-                    background: conicGradient(angle, color, 'transparent'),
-                    transform: `rotateZ(${offset + extraAngle}deg)`,
-                    zIndex: hasFocus ? COUNTER_FOCUS_Z : COUNTER_BLUR_Z
-                }}
-            />
-            <div
-                className="counter--start"
-                style={{
-                    background: startSemiCircle,
-                    transform: `${center} rotate(${offset}deg) ${toEdge}`
-                }}
-            ></div>
+    if (tail) {
+        return (
+            <>
+                <div
+                    className="counter"
+                    style={{
+                        background: conicGradient(angle, color, 'transparent'),
+                        transform: `rotateZ(${offset + extraAngle}deg)`,
+                        zIndex: hasFocus ? COUNTER_FOCUS_Z : COUNTER_BLUR_Z
+                    }}
+                />
+                <div
+                    className="counter--start"
+                    style={{
+                        background: startSemiCircle,
+                        transform: `${center} rotate(${offset}deg) ${toEdge}`
+                    }}
+                ></div>
+                <div
+                    className={hasFocus ? 'counter--handle dragging' : 'counter--handle'}
+                    style={{
+                        backgroundColor: HSL2String(color),
+                        transform: `${center} rotate(${angle + offset}deg) ${toEdge}`,
+                        zIndex: hasFocus ? HANDLE_FOCUS_Z : HANDLE_BLUR_Z
+                    }}
+                    onMouseDown={onDown}
+                    onTouchStart={onDown}
+                />
+            </>
+        );
+    } else {
+        return (
             <div
                 className={hasFocus ? 'counter--handle dragging' : 'counter--handle'}
                 style={{
@@ -48,6 +71,6 @@ export const Counter: React.FC<CounterProps> = ({ hasFocus, color, angle, offset
                 onMouseDown={onDown}
                 onTouchStart={onDown}
             />
-        </>
-    );
+        );
+    }
 };

@@ -69,9 +69,9 @@ module.exports = {
                 filename: isProd ? '[name].[contenthash].css' : '[name].[css]',
                 chunkFilename: isProd ? '[id].[contenthash].css' : '[id].[css]'
             }),
-        new GenerateSW({
+        isProd && new GenerateSW({
             swDest: resolve(BUILD_DIR, 'sw.js'),
-            maximumFileSizeToCacheInBytes: 4194304 //4MB
+            maximumFileSizeToCacheInBytes: 4194304  //4MB
         })
     ].filter(Boolean),
     optimization: {

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { CounterContext, History, Page, PageProps } from '../app';
 import { Dial } from '../components/Dial';
-import IconButton from '@mui/material/IconButton';
-import UndoRoundedIcon from '@mui/icons-material/UndoRounded';
 
 export interface SessionState {
     name: string;
