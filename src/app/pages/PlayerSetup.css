@@ -7,3 +7,8 @@
     justify-content: space-evenly;
 }
 
+
+#player-setup .info {
+    display: flex;
+    flex-direction: row;
+}

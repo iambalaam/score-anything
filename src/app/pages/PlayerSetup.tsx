@@ -5,7 +5,10 @@ import './PlayerSetup.css';
 import { SessionState } from './Session';
 import { ColorPicker } from '../components/ColorPicker';
 import { HSL } from '../util/color';
-import { Button } from '@mui/material';
+import { Button, IconButton, TextField } from '@mui/material';
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 
 export interface PlayerSetupProps {
     startNewSession: (session: SessionState) => void;
@@ -16,7 +19,7 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
     const [sessionState, setSessionState] = React.useState<SessionState>({
         counters: createDefaultCounterContexts(playerCount),
         history: [],
-        name: ''
+        name: '2 player game'
     });
 
     const handleSubmit: React.MouseEventHandler = (e) => {
@@ -57,6 +60,9 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
         setPlayerCount(newPlayerCount);
     };
 
+    const addPlayer = () => updatePlayerCount(sessionState.counters.length + 1);
+    const removePlayer = () => updatePlayerCount(sessionState.counters.length - 1);
+
     const setPlayerColor = (playerIndex: number, color: HSL) => {
         const newCtxs = [...sessionState.counters];
         const newPlayerCtx = newCtxs[playerIndex];
@@ -80,7 +86,23 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
 
     return (
         <main id="player-setup">
-            <div>2 player game</div>
+            <div className="info">
+                <span className="player-count">
+                    <IconButton onClick={removePlayer}>
+                        <RemoveRoundedIcon />
+                    </IconButton>
+                    <PeopleAltRoundedIcon />
+                    <IconButton onClick={addPlayer}>
+                        <AddRoundedIcon />
+                    </IconButton>
+                </span>
+                <TextField
+                    variant="outlined"
+                    onChange={handleGameNameChange}
+                    value={sessionState.name}
+                />
+            </div>
+
             <ColorPicker counterCtxs={sessionState.counters} setPlayerColor={setPlayerColor} />
             <Button variant="contained" onClick={start}>
                 Start
