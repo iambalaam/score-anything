@@ -57,7 +57,7 @@ export function SessionSelect({
     deleteSession
 }: SessionSelectProps) {
     return (
-        <main id="session=select">
+        <main id="session-select">
             <div className="sessions">
                 {appState.sessions.map((session, i) => (
                     <SessionView
