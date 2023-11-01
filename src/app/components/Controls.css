@@ -7,5 +7,17 @@
 }
 
 .toggle {
-    
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    height: 10vmin;
+    display: inline-block;
+    border-radius: 5vmin;
+}
+
+.toggle.on button:nth-child(1) {
+    color: #ddd;
+}
+.toggle.off button:nth-child(2) {
+    color: #ddd;
 }

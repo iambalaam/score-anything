@@ -47,9 +47,9 @@ button {
 
 /* MUI Icon size */
 .controls .MuiSvgIcon-root {
-    font-size: 6vmin;
+    font-size: 8vmin;
 }
 
 #root .MuiButtonBase-root {
-    font-size: 6vmin;
+    font-size: 8vmin;
 }
