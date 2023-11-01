@@ -151,14 +151,15 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
     const { backgroundColor, trackColor } = React.useContext(ColorContext);
 
     return (
-        <main>
+        <main id="dial">
             <div className="totals">
                 {counterCtxs.map(({ color }, i) => (
                     <span
                         key={HSL2String(color)}
                         style={{
                             color: HSL2String(color),
-                            width: `${100 / counterCtxs.length}%`
+                            width: `${100 / counterCtxs.length}%`,
+                            transform: `translate(-50%,-50%) rotate(${offsets[i]}deg) translateY(-50vmin)`
                         }}
                     >
                         {localTotals[i]}
