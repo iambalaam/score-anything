@@ -131,17 +131,17 @@ export function App() {
                         setPage={setPage}
                         nav={
                             <Toggle
-                                off={
-                                    <IconButton onClick={undo}>
+                                on={
+                                    <IconButton>
                                         <DataUsageRoundedIcon />
                                     </IconButton>
                                 }
-                                on={
-                                    <IconButton onClick={undo}>
+                                off={
+                                    <IconButton>
                                         <HistoryRoundedIcon />
                                     </IconButton>
                                 }
-                                onToggle={(on) => setPage(on ? 'counter' : 'history')}
+                                onToggle={(on) => setPage(on ? 'history' : 'counter')}
                             />
                         }
                         actions={
@@ -166,17 +166,17 @@ export function App() {
                         setPage={setPage}
                         nav={
                             <Toggle
-                                off={
-                                    <IconButton onClick={undo}>
+                                on={
+                                    <IconButton>
                                         <DataUsageRoundedIcon />
                                     </IconButton>
                                 }
-                                on={
-                                    <IconButton onClick={undo}>
+                                off={
+                                    <IconButton>
                                         <HistoryRoundedIcon />
                                     </IconButton>
                                 }
-                                onToggle={(on) => setPage(on ? 'counter' : 'history')}
+                                onToggle={(on) => setPage(on ? 'history' : 'counter')}
                             />
                         }
                         actions={
