@@ -6,6 +6,7 @@ html {
 main {
     font-size: 10vmin;
     text-align: center;
+    scale: 0.9;
 }
 
 /* Disable pull down to refresh on mobile */
