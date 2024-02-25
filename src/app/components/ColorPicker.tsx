@@ -121,13 +121,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ counterCtxs, setPlayer
 
     const currentColor = hasFocus !== -1 ? HSL2String(counterCtxs[hasFocus].color) : 'transparent';
     const dragging = hasFocus !== -1;
-    const { backgroundColor, trackColor } = React.useContext(ColorContext);
 
     return (
-        <div
-            className={`color-picker dial ${dragging ? 'dragging' : ''}`}
-            style={{ color: HSL2String(trackColor) }}
-        >
+        <div className={`color-picker dial ${dragging ? 'dragging' : ''}`}>
             {counterCtxs.map((counter, i) =>
                 hasFocus === i ? (
                     <Counter
@@ -152,13 +148,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ counterCtxs, setPlayer
                 )
             )}
 
-            <div
-                className="dial--cover"
-                style={{
-                    color: currentColor,
-                    backgroundColor: HSL2String(backgroundColor)
-                }}
-            />
+            <div className="dial--cover" style={{ color: currentColor }} />
         </div>
     );
 };

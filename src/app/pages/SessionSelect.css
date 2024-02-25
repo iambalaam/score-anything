@@ -16,7 +16,7 @@
     height: 30vmin;
     border-radius: 2vmin;
     margin: 2vmin;
-    background-color: #ddd;
+    background-color: var(--track-color);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -27,6 +27,7 @@
     font-family: sans-serif;
     text-align: left;
     font-size: 4vmin;
+    color: var(--font-color);
 }
 
 .session .delete {

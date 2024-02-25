@@ -148,8 +148,6 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 
     const currentColor = hasFocus !== -1 ? HSL2String(counterCtxs[hasFocus].color) : 'transparent';
 
-    const { backgroundColor, trackColor } = React.useContext(ColorContext);
-
     const totalsTransform = (offset: number, total: number) => {
         if (total === 1) {
             return 'translate(-50%,-50%) translateY(-50vmin)';
@@ -174,7 +172,7 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
                     </span>
                 ))}
             </div>
-            <div className="dial" style={{ backgroundColor: HSL2String(trackColor) }}>
+            <div className="dial">
                 {counterCtxs.map((counter, i) =>
                     hasFocus === i ? (
                         <Counter
@@ -200,8 +198,7 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
                 <div
                     className="dial--cover"
                     style={{
-                        color: currentColor,
-                        backgroundColor: HSL2String(backgroundColor)
+                        color: currentColor
                     }}
                 >
                     {angle != 0 && (

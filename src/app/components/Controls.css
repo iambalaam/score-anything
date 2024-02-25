@@ -1,23 +1,44 @@
 .controls {
     position: absolute;
+    padding: 2vmin;
     top: 0;
     left: 0;
-    margin: 2vmin;
     z-index: 1000;
+    color: var(--primary-color);
+    width: 100%;
+}
+
+.controls .top {
+    display: flex;
+    justify-content: space-between;
+}
+
+nav {
+    display: flex;
+    align-items: center;
 }
 
 .toggle {
-    background-color: #eee;
-    border: 1px solid #ddd;
+    background-color: var(--track-color);
+    border: 1px solid var(--border-color);
     border-radius: 2px;
     height: 10vmin;
-    display: inline-block;
+    display: inline-flex;
+}
+.toggle, .toggle button {
     border-radius: 5vmin;
 }
 
+
 .toggle.on button:nth-child(1) {
-    color: #ddd;
+    background-color: var(--primary-color) !important;
 }
-.toggle.off button:nth-child(2) {
-    color: #ddd;
+.toggle.on button:nth-child(1) svg {
+    color: var(--background-color) !important;
+}
+.toggle.off button:nth-child(2) { 
+    background-color: var(--primary-color) !important;
+}
+.toggle.off button:nth-child(2) svg{
+    color: var(--background-color) !important;
 }

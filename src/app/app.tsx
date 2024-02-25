@@ -23,11 +23,6 @@ export interface ColorContext {
     backgroundColor: HSL;
     trackColor: HSL;
 }
-export const initialColors: ColorContext = {
-    backgroundColor: { h: 0, s: 0, l: 100 },
-    trackColor: { h: 0, s: 0, l: 90 }
-};
-export const ColorContext = React.createContext<ColorContext>(initialColors);
 
 export type Page = 'main' | 'session-select' | 'player-setup' | 'counter' | 'history';
 
@@ -198,5 +193,5 @@ export function App() {
             body = <h1>?</h1>;
     }
 
-    return <ColorContext.Provider value={initialColors}>{body}</ColorContext.Provider>;
+    return body;
 }

@@ -9,6 +9,25 @@ main {
     scale: 0.9;
 }
 
+/* Light / Dark mode */
+:root {
+    --off-white: #ddd;
+}
+:root {
+    --background-color: white;
+    --track-color: #e6e6e6;
+    --border-color: #ccc;
+    --font-color: black;
+    --primary-color: #1a76d3
+}
+
+:root[data-theme='dark'] {
+    --background-color: #282c34;
+    --font-color: var(--off-white);
+    --track-color: #666;
+    --border-color: #777;
+}
+
 /* Disable pull down to refresh on mobile */
 html,
 body {
@@ -23,11 +42,13 @@ body {
 #root {
     height: 100vh;
     width: 100vw;
+    color: var(--font-color);
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
     overscroll-behavior-y: contain;
+    background-color: var(--background-color);
 }
 
 input[type='text'],
@@ -47,10 +68,8 @@ button {
 }
 
 /* MUI Icon size */
-.controls .MuiSvgIcon-root {
-    font-size: 8vmin;
-}
-
-#root .MuiButtonBase-root {
-    font-size: 8vmin;
+.MuiSvgIcon-root,
+.MuiButtonBase-root {
+    font-size: 8vmin !important;
+    color: currentColor !important;
 }

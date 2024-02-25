@@ -12,6 +12,7 @@
 #main button * { 
     font-size: 6vmin;
     margin: 2vmin;
+    color: var(--off-white);
 }
 
 #main button .text {
