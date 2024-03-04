@@ -5,6 +5,8 @@ import './Controls.css';
 import HomeRounded from '@mui/icons-material/HomeRounded';
 import LightModeRounded from '@mui/icons-material/LightModeRounded';
 import DarkModeRounded from '@mui/icons-material/DarkModeRounded';
+import Unlocked from '@mui/icons-material/LockOpenOutlined';
+import Locked from '@mui/icons-material/LockOutlined';
 import IconButton from '@mui/material/IconButton';
 import { Page } from '../app';
 
@@ -42,6 +44,21 @@ export function Controls({ setPage, nav, actions }: ControlProps) {
         window.document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
     }, [isDarkMode]);
 
+    const [isLocked, setLocked] = useState(false);
+    useEffect(() => {
+        // ts-loader can't find WakeLockSentinel
+        let lockPromise: Promise<any> | undefined;
+        if (isLocked && 'wakeLock' in window.navigator) {
+            lockPromise = (window.navigator.wakeLock as any).request('screen');
+        }
+
+        return () => {
+            if (lockPromise) {
+                lockPromise.then((lock) => lock.release());
+            }
+        };
+    }, [isLocked]);
+
     return (
         <div className="controls">
             <div className="top">
@@ -65,6 +82,20 @@ export function Controls({ setPage, nav, actions }: ControlProps) {
                             </IconButton>
                         }
                         onToggle={setDarkMode}
+                    />
+                    <Toggle
+                        defaultOn={false}
+                        off={
+                            <IconButton>
+                                <Locked />
+                            </IconButton>
+                        }
+                        on={
+                            <IconButton>
+                                <Unlocked />
+                            </IconButton>
+                        }
+                        onToggle={setLocked}
                     />
                 </div>
             </div>

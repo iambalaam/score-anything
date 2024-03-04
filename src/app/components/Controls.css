@@ -18,6 +18,12 @@ nav {
     align-items: center;
 }
 
+.controls .settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1vmin;
+}
+
 .toggle {
     background-color: var(--track-color);
     border: 1px solid var(--border-color);
