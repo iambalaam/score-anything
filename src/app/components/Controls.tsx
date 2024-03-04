@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import './Controls.css';
 
 import HomeRounded from '@mui/icons-material/HomeRounded';
@@ -9,6 +9,7 @@ import Unlocked from '@mui/icons-material/LockOpenOutlined';
 import Locked from '@mui/icons-material/LockOutlined';
 import IconButton from '@mui/material/IconButton';
 import { Page } from '../app';
+import { Toggle } from './Toggle';
 
 export interface Settings {
     theme: 'dark' | 'light';
@@ -21,28 +22,6 @@ export interface ControlProps {
     setPage: (page: Page) => void;
     nav?: React.ReactNode;
     actions?: React.ReactNode;
-}
-
-export interface ToggleProps {
-    off: React.ReactNode;
-    on: React.ReactNode;
-    onToggle: (onOff: boolean) => void;
-    defaultOn?: boolean;
-}
-export function Toggle({ off, on, onToggle, defaultOn }: ToggleProps) {
-    const [state, setState] = React.useState<boolean>(defaultOn || false);
-    return (
-        <span
-            className={state ? 'toggle on' : 'toggle off'}
-            onClick={() => {
-                onToggle(!state);
-                setState(!state);
-            }}
-        >
-            {off}
-            {on}
-        </span>
-    );
 }
 
 export function Controls({ settings, setSettings, setPage, nav, actions }: ControlProps) {
@@ -75,35 +54,35 @@ export function Controls({ settings, setSettings, setPage, nav, actions }: Contr
                 </nav>
                 <div className="settings">
                     <Toggle
-                        defaultOn={false}
-                        off={
-                            <IconButton>
-                                <DarkModeRounded />
-                            </IconButton>
-                        }
+                        value={settings.theme === 'light'}
                         on={
                             <IconButton>
                                 <LightModeRounded />
                             </IconButton>
                         }
+                        off={
+                            <IconButton>
+                                <DarkModeRounded />
+                            </IconButton>
+                        }
                         onToggle={(onOff) => {
-                            setSettings({ theme: onOff ? 'dark' : 'light' });
+                            setSettings({ theme: onOff ? 'light' : 'dark' });
                         }}
                     />
                     <Toggle
-                        defaultOn={false}
-                        off={
-                            <IconButton>
-                                <Locked />
-                            </IconButton>
-                        }
+                        value={settings['screen-wake-lock'] === 'unlocked'}
                         on={
                             <IconButton>
                                 <Unlocked />
                             </IconButton>
                         }
+                        off={
+                            <IconButton>
+                                <Locked />
+                            </IconButton>
+                        }
                         onToggle={(onOff) =>
-                            setSettings({ 'screen-wake-lock': onOff ? 'locked' : 'unlocked' })
+                            setSettings({ 'screen-wake-lock': onOff ? 'unlocked' : 'locked' })
                         }
                     />
                 </div>

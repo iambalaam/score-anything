@@ -23,28 +23,3 @@ nav {
     flex-direction: column;
     gap: 1vmin;
 }
-
-.toggle {
-    background-color: var(--track-color);
-    border: 1px solid var(--border-color);
-    border-radius: 2px;
-    height: 10vmin;
-    display: inline-flex;
-}
-.toggle, .toggle button {
-    border-radius: 5vmin;
-}
-
-
-.toggle.on button:nth-child(1) {
-    background-color: var(--primary-color) !important;
-}
-.toggle.on button:nth-child(1) svg {
-    color: var(--background-color) !important;
-}
-.toggle.off button:nth-child(2) { 
-    background-color: var(--primary-color) !important;
-}
-.toggle.off button:nth-child(2) svg{
-    color: var(--background-color) !important;
-}

@@ -7,7 +7,8 @@ import './index.css';
 import { useLocalStorage } from './util/storage';
 import { Main } from './pages/Main';
 import { SessionSelect } from './pages/SessionSelect';
-import { Controls, Settings, Toggle } from './components/Controls';
+import { Controls, Settings } from './components/Controls';
+import { Toggle } from './components/Toggle';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
 import UndoRounded from '@mui/icons-material/UndoRounded';
@@ -155,6 +156,7 @@ export function App() {
                         setPage={setPage}
                         nav={
                             <Toggle
+                                value={true}
                                 on={
                                     <IconButton>
                                         <DataUsageRoundedIcon />
@@ -191,6 +193,7 @@ export function App() {
                         setPage={setPage}
                         nav={
                             <Toggle
+                                value={false}
                                 on={
                                     <IconButton>
                                         <DataUsageRoundedIcon />
