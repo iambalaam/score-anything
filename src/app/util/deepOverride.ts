@@ -1,4 +1,4 @@
-export const deepOverride = (initial: unknown, override: unknown) => {
+export const deepOverride = (initial: unknown, override: unknown, merge = false) => {
     // Empty
     if (initial === undefined) return override;
     if (override === undefined) return initial;
@@ -6,15 +6,15 @@ export const deepOverride = (initial: unknown, override: unknown) => {
     // Value types
     if (typeof override !== 'object') return override;
     // Objects
-    const obj: Record<string, unknown> = {};
-    if (typeof initial === 'object' && initial !== null) {
+    const obj: {} = Array.isArray(override) ? [] : {};
+    if (merge && typeof initial === 'object' && initial !== null) {
         Object.keys(initial).forEach((key) => {
-            obj[key] = deepOverride((initial as any)[key], (override as any)[key]);
+            (obj as any)[key] = deepOverride((initial as any)[key], (override as any)[key], merge);
         });
     }
     if (typeof override === 'object') {
         Object.keys(override).forEach((key) => {
-            obj[key] = deepOverride((initial as any)[key], (override as any)[key]);
+            (obj as any)[key] = deepOverride((initial as any)[key], (override as any)[key], merge);
         });
     }
     return obj;

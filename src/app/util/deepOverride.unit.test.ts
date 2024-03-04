@@ -33,7 +33,7 @@ describe('deepOverride()', () => {
         expect(deepOverride({ value: 1 }, { value: 2 })).toEqual({ value: 2 });
     });
     it('merges objects', () => {
-        expect(deepOverride({ a: 1 }, { b: 2 })).toEqual({ a: 1, b: 2 });
+        expect(deepOverride({ a: 1 }, { b: 2 }, true)).toEqual({ a: 1, b: 2 });
     });
 
     // Different shapes
@@ -43,10 +43,15 @@ describe('deepOverride()', () => {
     });
 
     // Deep objects
-    it('merges deep objects', () => {
+    it('can delete data', () => {
+        const initialDeep = [1, 2, 3, 4];
+        const overrideDeep = [1, 2, 3];
+        expect(deepOverride(initialDeep, overrideDeep)).toEqual([1, 2, 3]);
+    });
+    it('can keep & merge data', () => {
         const initialDeep = { initial: { nested: 'value' } };
         const overrideDeep = { override: { nested: 'value' } };
-        expect(deepOverride(initialDeep, overrideDeep)).toEqual({
+        expect(deepOverride(initialDeep, overrideDeep, true)).toEqual({
             initial: { nested: 'value' },
             override: { nested: 'value' }
         });
