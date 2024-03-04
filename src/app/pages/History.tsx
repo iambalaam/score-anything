@@ -4,7 +4,7 @@ import './History.css';
 import { HSL2String } from '../util/color';
 import { toAbsFloorSignedIntString } from '../util/math';
 
-export function History({ data, setPage }: SessionProps) {
+export function History({ data }: SessionProps) {
     const gridTemplateColumns = Array(data.history[0].length).fill('1fr').join(' ');
 
     return (

@@ -13,7 +13,7 @@ export interface SessionProps extends PageProps {
     setData: (data: SessionState) => void;
 }
 
-export function Session({ data, setData, setPage, setControls }: SessionProps) {
+export function Session({ data, setData }: SessionProps) {
     const addToHistory = (index: number, total: number) => {
         // at this point the history has already been changed
         const copy: History = [...data.history];

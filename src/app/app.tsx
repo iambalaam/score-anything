@@ -7,7 +7,7 @@ import './index.css';
 import { useLocalStorage } from './util/storage';
 import { Main } from './pages/Main';
 import { SessionSelect } from './pages/SessionSelect';
-import { Controls, Toggle } from './components/Controls';
+import { Controls, Settings, Toggle } from './components/Controls';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
 import UndoRounded from '@mui/icons-material/UndoRounded';
@@ -28,17 +28,22 @@ export type Page = 'main' | 'session-select' | 'player-setup' | 'counter' | 'his
 
 export interface PageProps {
     setPage: (page: Page) => void;
-    setControls: (controls: JSX.Element) => void;
 }
 
 export interface AppState {
     sessions: SessionState[];
+    settings: Settings;
 }
 
+const initialSessionState: SessionState[] = [];
+const initialSettingsState: Settings = {
+    theme: 'light',
+    'screen-wake-lock': 'unlocked'
+};
+const initialAppState = { sessions: initialSessionState, settings: initialSettingsState };
+
 export function App() {
-    const [appState, setAppState] = useLocalStorage<AppState>('data', {
-        sessions: []
-    });
+    const [appState, setAppState] = useLocalStorage<AppState>('data', initialAppState);
 
     const [currentSession, setCurrentSession] = React.useState<number>(-1);
     const [page, setPage] = React.useState<Page>('main');
@@ -46,7 +51,8 @@ export function App() {
 
     const startNewSession = (session: SessionState) => {
         setAppState({
-            sessions: [...appState.sessions, session]
+            sessions: [...appState.sessions, session],
+            settings: appState.settings
         });
         setCurrentSession(appState.sessions.length);
         setPage('counter');
@@ -70,6 +76,8 @@ export function App() {
             copy[currentSession] = data;
 
             return {
+                ...initialAppState,
+                ...prevState,
                 sessions: copy
             };
         });
@@ -88,12 +96,23 @@ export function App() {
         });
     };
 
+    const updateSettings = (settings: Partial<Settings>) => {
+        setAppState((prevState) => {
+            const newSettings = { ...initialSettingsState, ...prevState.settings, ...settings };
+            return { ...initialAppState, ...prevState, settings: newSettings };
+        });
+    };
+
     let body: JSX.Element;
     switch (page) {
         case 'main':
             body = (
                 <>
-                    <Controls setPage={setPage} />
+                    <Controls
+                        settings={appState.settings}
+                        setSettings={updateSettings}
+                        setPage={setPage}
+                    />
                     <Main setPage={setPage} hasPreviousGames={appState.sessions.length > 0} />
                 </>
             );
@@ -101,7 +120,11 @@ export function App() {
         case 'player-setup':
             body = (
                 <>
-                    <Controls setPage={setPage} />
+                    <Controls
+                        settings={appState.settings}
+                        setSettings={updateSettings}
+                        setPage={setPage}
+                    />
                     <PlayerSetup startNewSession={startNewSession} />
                 </>
             );
@@ -109,7 +132,11 @@ export function App() {
         case 'session-select':
             body = (
                 <>
-                    <Controls setPage={setPage} />
+                    <Controls
+                        settings={appState.settings}
+                        setSettings={updateSettings}
+                        setPage={setPage}
+                    />
                     <SessionSelect
                         appState={appState}
                         deleteSession={deleteSession}
@@ -123,6 +150,8 @@ export function App() {
             body = (
                 <>
                     <Controls
+                        settings={appState.settings}
+                        setSettings={updateSettings}
                         setPage={setPage}
                         nav={
                             <Toggle
@@ -149,7 +178,6 @@ export function App() {
                         data={appState.sessions[currentSession]}
                         setData={updateSession}
                         setPage={setPage}
-                        setControls={setConrols}
                     />
                 </>
             );
@@ -158,6 +186,8 @@ export function App() {
             body = (
                 <>
                     <Controls
+                        settings={appState.settings}
+                        setSettings={updateSettings}
                         setPage={setPage}
                         nav={
                             <Toggle
@@ -184,7 +214,6 @@ export function App() {
                         data={appState.sessions[currentSession]}
                         setData={updateSession}
                         setPage={setPage}
-                        setControls={setConrols}
                     />
                 </>
             );

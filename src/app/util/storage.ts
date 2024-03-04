@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { deepOverride } from './deepOverride';
 
 export function storeData<T>(key: string, data: T) {
     if ('localStorage' in window) {
@@ -21,7 +22,7 @@ export function useLocalStorage<T>(
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
     const [data, setData] = useState<T>(() => {
         const localData = getData<T>(key);
-        return localData || initialValue;
+        return deepOverride(initialValue, localData, false) as any;
     });
 
     useEffect(() => {

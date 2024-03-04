@@ -10,7 +10,14 @@ import Locked from '@mui/icons-material/LockOutlined';
 import IconButton from '@mui/material/IconButton';
 import { Page } from '../app';
 
+export interface Settings {
+    theme: 'dark' | 'light';
+    'screen-wake-lock': 'locked' | 'unlocked';
+}
+
 export interface ControlProps {
+    settings: Settings;
+    setSettings: (s: Partial<Settings>) => void;
     setPage: (page: Page) => void;
     nav?: React.ReactNode;
     actions?: React.ReactNode;
@@ -38,17 +45,15 @@ export function Toggle({ off, on, onToggle, defaultOn }: ToggleProps) {
     );
 }
 
-export function Controls({ setPage, nav, actions }: ControlProps) {
-    const [isDarkMode, setDarkMode] = useState(false);
+export function Controls({ settings, setSettings, setPage, nav, actions }: ControlProps) {
     useEffect(() => {
-        window.document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-    }, [isDarkMode]);
+        window.document.documentElement.setAttribute('data-theme', settings.theme);
+    }, [settings.theme]);
 
-    const [isLocked, setLocked] = useState(false);
     useEffect(() => {
         // ts-loader can't find WakeLockSentinel
         let lockPromise: Promise<any> | undefined;
-        if (isLocked && 'wakeLock' in window.navigator) {
+        if (settings['screen-wake-lock'] && 'wakeLock' in window.navigator) {
             lockPromise = (window.navigator.wakeLock as any).request('screen');
         }
 
@@ -57,7 +62,7 @@ export function Controls({ setPage, nav, actions }: ControlProps) {
                 lockPromise.then((lock) => lock.release());
             }
         };
-    }, [isLocked]);
+    }, [settings['screen-wake-lock']]);
 
     return (
         <div className="controls">
@@ -81,7 +86,9 @@ export function Controls({ setPage, nav, actions }: ControlProps) {
                                 <LightModeRounded />
                             </IconButton>
                         }
-                        onToggle={setDarkMode}
+                        onToggle={(onOff) => {
+                            setSettings({ theme: onOff ? 'dark' : 'light' });
+                        }}
                     />
                     <Toggle
                         defaultOn={false}
@@ -95,7 +102,9 @@ export function Controls({ setPage, nav, actions }: ControlProps) {
                                 <Unlocked />
                             </IconButton>
                         }
-                        onToggle={setLocked}
+                        onToggle={(onOff) =>
+                            setSettings({ 'screen-wake-lock': onOff ? 'locked' : 'unlocked' })
+                        }
                     />
                 </div>
             </div>
