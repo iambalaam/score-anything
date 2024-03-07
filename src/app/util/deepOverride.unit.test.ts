@@ -41,6 +41,11 @@ describe('deepOverride()', () => {
         expect(deepOverride(1, { obj: true })).toEqual({ obj: true });
         expect(deepOverride({ obj: true }, 1)).toEqual(1);
     });
+    it('allows deep defaults', () => {
+        expect(deepOverride({ deep: { value: true } }, {}, true)).toEqual({
+            deep: { value: true }
+        });
+    });
 
     // Deep objects
     it('can delete data', () => {

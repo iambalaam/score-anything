@@ -22,7 +22,7 @@ export function useLocalStorage<T>(
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
     const [data, setData] = useState<T>(() => {
         const localData = getData<T>(key);
-        return deepOverride(initialValue, localData, false) as any;
+        return deepOverride(initialValue, localData, true) as any;
     });
 
     useEffect(() => {
