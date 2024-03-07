@@ -6,7 +6,7 @@ import { HapticValue } from './HapticValue';
 
 import { Counter } from './Counter';
 import './Dial.css';
-import { ColorContext, CounterContext } from '../app';
+import { CounterContext } from '../app';
 import { HSL2String } from '../util/color';
 import { getEventCoords } from '../util/events';
 
@@ -198,6 +198,10 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
                 <div
                     className="dial--cover"
                     style={{
+                        transform:
+                            counterCtxs.length > 1
+                                ? `translate(-50%, -50%) rotate(${180 + offsets[hasFocus]}deg)`
+                                : 'translate(-50%, -50%)',
                         color: currentColor
                     }}
                 >
