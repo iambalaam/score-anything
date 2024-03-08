@@ -22,6 +22,7 @@
     z-index: 200;
     display: grid;
     align-items: center;
+    transform: translate(-50%, -50%);
 }
 
 .counter {
