@@ -130,11 +130,11 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
                 ))}
 
                 <div className="count">
-                    <button className="add" onClick={addPlayer}>
-                        <Add />
-                    </button>
                     <button className="remove" onClick={removePlayer}>
                         <Remove />
+                    </button>
+                    <button className="add" onClick={addPlayer}>
+                        <Add />
                     </button>
                 </div>
             </div>
