@@ -6,7 +6,6 @@ html {
 main {
     font-size: 10vmin;
     text-align: center;
-    scale: 0.9;
 }
 
 /* Light / Dark mode */
@@ -39,11 +38,13 @@ body {
     margin: 0;
 }
 
+
 #root {
     height: 100vh;
     width: 100vw;
     color: var(--font-color);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     overflow: hidden;
@@ -57,7 +58,9 @@ input[type='number'] {
     font-size: 4vmin;
     border: none;
     border-radius: 2vmin;
-    background-color: #eee;
+    background-color: transparent;
+    border: 1px solid var(--font-color);
+    color: var(--font-color);
 }
 
 button {
