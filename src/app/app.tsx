@@ -48,7 +48,6 @@ export function App() {
 
     const [currentSession, setCurrentSession] = React.useState<number>(-1);
     const [page, setPage] = React.useState<Page>('main');
-    const [controls, setConrols] = React.useState<JSX.Element>();
 
     const startNewSession = (session: SessionState) => {
         setAppState({
@@ -167,7 +166,7 @@ export function App() {
                                         <HistoryRoundedIcon />
                                     </IconButton>
                                 }
-                                onToggle={(on) => setPage(on ? 'history' : 'counter')}
+                                onToggle={() => setPage('history')}
                             />
                         }
                         actions={
@@ -204,7 +203,7 @@ export function App() {
                                         <HistoryRoundedIcon />
                                     </IconButton>
                                 }
-                                onToggle={(on) => setPage(on ? 'history' : 'counter')}
+                                onToggle={() => setPage('counter')}
                             />
                         }
                         actions={

@@ -43,6 +43,9 @@ export function Controls({ settings, setSettings, setPage, nav, actions }: Contr
         };
     }, [settings['screen-wake-lock']]);
 
+    const isLight = settings.theme === 'light';
+    const isUnlocked = settings['screen-wake-lock'] === 'unlocked';
+
     return (
         <div className="controls">
             <div className="top">
@@ -54,7 +57,7 @@ export function Controls({ settings, setSettings, setPage, nav, actions }: Contr
                 </nav>
                 <div className="settings">
                     <Toggle
-                        value={settings.theme === 'light'}
+                        value={isLight}
                         on={
                             <IconButton>
                                 <LightModeRounded />
@@ -65,12 +68,10 @@ export function Controls({ settings, setSettings, setPage, nav, actions }: Contr
                                 <DarkModeRounded />
                             </IconButton>
                         }
-                        onToggle={(onOff) => {
-                            setSettings({ theme: onOff ? 'light' : 'dark' });
-                        }}
+                        onToggle={() => setSettings({ theme: isLight ? 'dark' : 'light' })}
                     />
                     <Toggle
-                        value={settings['screen-wake-lock'] === 'unlocked'}
+                        value={isUnlocked}
                         on={
                             <IconButton>
                                 <Unlocked />
@@ -81,8 +82,8 @@ export function Controls({ settings, setSettings, setPage, nav, actions }: Contr
                                 <Locked />
                             </IconButton>
                         }
-                        onToggle={(onOff) =>
-                            setSettings({ 'screen-wake-lock': onOff ? 'unlocked' : 'locked' })
+                        onToggle={() =>
+                            setSettings({ 'screen-wake-lock': isUnlocked ? 'locked' : 'unlocked' })
                         }
                     />
                 </div>
