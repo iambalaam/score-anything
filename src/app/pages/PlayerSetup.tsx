@@ -59,8 +59,16 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
         setPlayerCount(newPlayerCount);
     };
 
-    const addPlayer = () => updatePlayerCount(sessionState.counters.length + 1);
-    const removePlayer = () => updatePlayerCount(sessionState.counters.length - 1);
+    const addPlayer = () => {
+        if (playerCount < 8) {
+            updatePlayerCount(playerCount + 1);
+        }
+    };
+    const removePlayer = () => {
+        if (playerCount > 1) {
+            updatePlayerCount(playerCount - 1);
+        }
+    };
 
     const setPlayerColor = (playerIndex: number, color: HSL) => {
         const newCtxs = [...sessionState.counters];
