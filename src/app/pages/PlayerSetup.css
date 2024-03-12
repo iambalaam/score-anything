@@ -7,12 +7,13 @@
 }
 
 #player-setup>.name {
-    width: 90vmin;
-    margin: 5vmin 10vmin;
+    width: 80vmin;
+    margin: 10vmin;
     font-size: 1.3em;
 }
 
 #player-setup .player {
+    width: 90vmin;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
