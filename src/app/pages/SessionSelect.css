@@ -43,6 +43,29 @@
     cursor: pointer;
 }
 
+.session .plot {
+    flex-grow: 1;
+    padding: 1vmin;
+}
+.session .plot .positive,
+.session .plot .zero,
+.session .plot .negative {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5vmin;
+}
+.session .plot .positive {
+    align-items: end;
+}
+.session .plot .negative {
+    align-items: start;
+}
+
+.session .plot .bar {
+    flex-grow: 1;
+    border-radius: 1vmin;
+}
+
 .session .scores {
     overflow: hidden;
     display: flex;

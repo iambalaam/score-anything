@@ -22,12 +22,45 @@ function SessionView({ name, counters, history, selectSession, deleteSession }: 
     };
 
     const totals = history[history.length - 1];
+    const max = Math.max(...totals, 0);
+    const min = Math.min(...totals, 0);
+    const spread = max - min;
     return (
         <div className="session" onClick={handleSelect}>
             <span className="delete" onClick={handleDelete}>
                 X
             </span>
             <div className="name">{name}</div>
+            <div className="plot">
+                <div className="positive" style={{ height: `${(100 * max) / spread}%` }}>
+                    {totals.map((total, i) => {
+                        return (
+                            <span
+                                className="bar"
+                                style={{
+                                    height: `${100 * Math.max(total / max, 0)}%`,
+                                    backgroundColor: HSL2String(counters[i].color)
+                                }}
+                            ></span>
+                        );
+                    })}
+                </div>
+                <div className="zero"></div>
+                <div className="negative" style={{ height: `${(100 * -min) / spread}%` }}>
+                    {totals.map((total, i) => {
+                        return (
+                            <span
+                                className="bar"
+                                style={{
+                                    height: `${100 * Math.max(total / min, 0)}%`,
+                                    backgroundColor: HSL2String(counters[i].color)
+                                }}
+                            ></span>
+                        );
+                    })}
+                </div>
+                <span className="zero" />
+            </div>
             <div className="scores">
                 {totals.map((total, i) => (
                     <span
