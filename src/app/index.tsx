@@ -2,6 +2,11 @@ import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app';
 
+import posthog from 'posthog-js';
+posthog.init('phc_xPrfwCZCIei8ZWgdH0nUFHBLxLImIra52rSsmntNe0D', {
+    api_host: 'https://eu.posthog.com'
+});
+
 // register service worker
 navigator?.serviceWorker.register('./sw.js');
 
