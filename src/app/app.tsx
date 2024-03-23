@@ -13,6 +13,7 @@ import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
 import UndoRounded from '@mui/icons-material/UndoRounded';
 import IconButton from '@mui/material/IconButton';
+import { ErrorHandler } from './components/ErrorHandler';
 
 export type History = number[][];
 export interface CounterContext {
@@ -224,5 +225,5 @@ export function App() {
             body = <h1>?</h1>;
     }
 
-    return body;
+    return <ErrorHandler>{body}</ErrorHandler>;
 }
