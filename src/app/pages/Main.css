@@ -18,3 +18,7 @@
 #main button .text {
     flex-grow: 1;
 }
+
+:root[data-theme='light'] #main button:disabled *{
+    color: white;
+}
