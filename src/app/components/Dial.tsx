@@ -9,6 +9,7 @@ import './Dial.css';
 import { CounterContext } from '../app';
 import { HSL2String } from '../util/color';
 import { getEventCoords } from '../util/events';
+import { metrics } from '../metrics';
 
 const DEGREES2POINTS = 30;
 const DRAGGING_CLASS = 'dragging';
@@ -106,6 +107,11 @@ export const Dial: React.FC<DialProps> = ({ counterCtxs, totals, addToHistory })
 
                     if (newPoints !== 0) {
                         addToHistory(i, newTotals[i]);
+                        metrics.add('score-change', {
+                            total: newTotals[i],
+                            difference: toAbsFloor(deltaPoints),
+                            absDifference: Math.abs(toAbsFloor(deltaPoints))
+                        });
                     }
                 }
             },
