@@ -119,7 +119,7 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
 
             <div className="players">
                 {sessionState.counters.map((player, index) => (
-                    <div className="player">
+                    <div className="player" key={index}>
                         <span
                             className="color"
                             style={{ color: HSL2String(player.color) }}

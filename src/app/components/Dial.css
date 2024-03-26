@@ -6,6 +6,7 @@
 }
 
 .dial {
+    overflow: hidden;
     width: 85vmin;
     height: 85vmin;
     position: relative;

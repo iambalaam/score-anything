@@ -1,5 +1,6 @@
 #settings {
-    max-width: 90vw;
+    width: 90vmin;
+    margin: 10vmin auto;
 }
 
 #settings .field {

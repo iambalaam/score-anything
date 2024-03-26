@@ -9,19 +9,25 @@ import { Page } from '../app';
 
 export interface NavProps {
     showSettings: boolean;
-    openCloseSettings: () => void;
+    setShowSettings: React.Dispatch<React.SetStateAction<boolean>>;
     setPage: (page: Page) => void;
 }
 
-export function Nav({ setPage, openCloseSettings, showSettings }: NavProps) {
+export function Nav({ setPage, setShowSettings, showSettings }: NavProps) {
     return (
         <nav>
-            <IconButton className="home" onClick={() => setPage('main')}>
+            <IconButton
+                className="home"
+                onClick={() => {
+                    setPage('main');
+                    setShowSettings(false);
+                }}
+            >
                 <HomeRounded />
             </IconButton>
             <IconButton
                 className={showSettings ? 'show settings' : 'hide settings'}
-                onClick={openCloseSettings}
+                onClick={() => setShowSettings((s) => !s)}
             >
                 <SettingsRounded />
             </IconButton>

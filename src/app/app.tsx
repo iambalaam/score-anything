@@ -48,7 +48,6 @@ export function App() {
     const [currentSession, setCurrentSession] = React.useState<number>(-1);
     const [page, setPage] = React.useState<Page>('main');
     const [showSettings, setShowSettings] = React.useState(false);
-    const openCloseSettings = () => setShowSettings((open) => !open);
 
     // Settings updates
     const { settings } = appState;
@@ -181,11 +180,7 @@ export function App() {
 
     return (
         <ErrorHandler>
-            <Nav
-                showSettings={showSettings}
-                openCloseSettings={openCloseSettings}
-                setPage={setPage}
-            />
+            <Nav showSettings={showSettings} setShowSettings={setShowSettings} setPage={setPage} />
             {showSettings ? (
                 <Settings settings={appState.settings} setSettings={updateSettings} />
             ) : (

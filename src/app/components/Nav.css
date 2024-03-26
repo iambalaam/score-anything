@@ -5,7 +5,7 @@ nav {
 }
 
 nav .settings {
-    transition: 300ms;
+    transition: 500ms;
 }
 nav .show.settings {
     transform: rotate(0deg);
