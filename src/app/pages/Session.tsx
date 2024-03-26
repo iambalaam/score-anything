@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { CounterContext, History, Page, PageProps } from '../app';
+import { CounterContext, History, PageProps } from '../app';
 import { Dial } from '../components/Dial';
+import { IconButton } from '@mui/material';
+import Undo from '@mui/icons-material/UndoRounded';
 
 export interface SessionState {
     name: string;
@@ -10,26 +12,18 @@ export interface SessionState {
 
 export interface SessionProps extends PageProps {
     data: SessionState;
-    setData: (data: SessionState) => void;
+    undo: () => void;
+    addToHistory: (index: number, total: number) => void;
 }
 
-export function Session({ data, setData }: SessionProps) {
-    const addToHistory = (index: number, total: number) => {
-        // at this point the history has already been changed
-        const copy: History = [...data.history];
-        const lastEntry = copy[copy.length - 1];
-        const nextEntry = [...lastEntry];
-        nextEntry[index] = total;
-        copy.push(nextEntry);
-
-        setData({
-            ...data,
-            history: copy
-        });
-    };
-
+export function Session({ data, undo, addToHistory }: SessionProps) {
     return (
         <main id="session">
+            <div className="controls">
+                <IconButton onClick={undo}>
+                    <Undo />
+                </IconButton>
+            </div>
             <Dial
                 totals={data.history[data.history.length - 1]}
                 counterCtxs={data.counters}

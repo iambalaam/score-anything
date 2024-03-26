@@ -118,6 +118,21 @@ export function App() {
         });
     };
 
+    const addToHistory = (index: number, total: number) => {
+        // at this point the history has already been changed
+        const data = appState.sessions[currentSession];
+        const copy: History = [...data.history];
+        const lastEntry = copy[copy.length - 1];
+        const nextEntry = [...lastEntry];
+        nextEntry[index] = total;
+        copy.push(nextEntry);
+
+        updateSession({
+            ...data,
+            history: copy
+        });
+    };
+
     const undo = () => {
         const data = appState.sessions[currentSession];
         if (data.history.length < 2) return;
@@ -160,7 +175,8 @@ export function App() {
             body = (
                 <Session
                     data={appState.sessions[currentSession]}
-                    setData={updateSession}
+                    undo={undo}
+                    addToHistory={addToHistory}
                     setPage={setPage}
                 />
             );
@@ -169,7 +185,8 @@ export function App() {
             body = (
                 <History
                     data={appState.sessions[currentSession]}
-                    setData={updateSession}
+                    undo={undo}
+                    addToHistory={addToHistory}
                     setPage={setPage}
                 />
             );

@@ -13,3 +13,9 @@ nav .show.settings {
 nav .hide.settings {
     transform: rotate(180deg);
 }
+
+/* Not really meant to be here */
+.controls {
+    display: flex;
+    justify-content: space-between;
+}
