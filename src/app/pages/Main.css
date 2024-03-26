@@ -1,7 +1,7 @@
 #main {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 #main button { 
@@ -19,6 +19,6 @@
     flex-grow: 1;
 }
 
-:root[data-theme='light'] #main button:disabled *{
+:root:not([data-theme='dark']) #main button:disabled *{
     color: white;
 }

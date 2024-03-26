@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import { PlayerSetup } from './pages/PlayerSetup';
 import { HSL } from './util/color';
 import { Session, SessionState } from './pages/Session';
@@ -7,13 +8,9 @@ import './index.css';
 import { useLocalStorage } from './util/storage';
 import { Main } from './pages/Main';
 import { SessionSelect } from './pages/SessionSelect';
-import { Controls, Settings } from './components/Controls';
-import { Toggle } from './components/Toggle';
-import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
-import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
-import UndoRounded from '@mui/icons-material/UndoRounded';
-import IconButton from '@mui/material/IconButton';
+import { Nav } from './components/Nav';
 import { ErrorHandler } from './components/ErrorHandler';
+import { Settings } from './components/Settings';
 
 export type History = number[][];
 export interface CounterContext {
@@ -40,7 +37,8 @@ export interface AppState {
 const initialSessionState: SessionState[] = [];
 const initialSettingsState: Settings = {
     theme: 'light',
-    'screen-wake-lock': 'unlocked'
+    'screen-wake-lock': 'unlocked',
+    'screen-orientation-lock': 'unlocked'
 };
 const initialAppState = { sessions: initialSessionState, settings: initialSettingsState };
 
@@ -49,6 +47,43 @@ export function App() {
 
     const [currentSession, setCurrentSession] = React.useState<number>(-1);
     const [page, setPage] = React.useState<Page>('main');
+    const [showSettings, setShowSettings] = React.useState(false);
+    const openCloseSettings = () => setShowSettings((open) => !open);
+
+    // Settings updates
+    const { settings } = appState;
+    useEffect(() => {
+        window.document.documentElement.setAttribute('data-theme', settings.theme);
+    }, [settings.theme]);
+    useEffect(() => {
+        let lockPromise: Promise<any> | undefined;
+        if (settings['screen-wake-lock'] && 'wakeLock' in window.navigator) {
+            lockPromise = (window.navigator.wakeLock as any).request('screen');
+        }
+        return () => {
+            if (lockPromise) {
+                lockPromise.then((lock) => lock.release());
+            }
+        };
+    }, [settings['screen-wake-lock']]);
+    useEffect(() => {
+        const { orientation } = screen;
+        if (settings['screen-orientation-lock'] === 'locked') {
+            try {
+                //@ts-ignore
+                orientation.lock(orientation.type).catch(() => {});
+            } catch (_) {
+                // Do nothing
+            }
+        }
+        return () => {
+            try {
+                orientation.unlock();
+            } catch (_) {
+                // Do nothing
+            }
+        };
+    }, [settings['screen-orientation-lock']]);
 
     const startNewSession = (session: SessionState) => {
         setAppState({
@@ -107,123 +142,55 @@ export function App() {
     let body: JSX.Element;
     switch (page) {
         case 'main':
-            body = (
-                <>
-                    <Controls
-                        settings={appState.settings}
-                        setSettings={updateSettings}
-                        setPage={setPage}
-                    />
-                    <Main setPage={setPage} hasPreviousGames={appState.sessions.length > 0} />
-                </>
-            );
+            body = <Main setPage={setPage} hasPreviousGames={appState.sessions.length > 0} />;
             break;
         case 'player-setup':
-            body = (
-                <>
-                    <Controls
-                        settings={appState.settings}
-                        setSettings={updateSettings}
-                        setPage={setPage}
-                    />
-                    <PlayerSetup startNewSession={startNewSession} />
-                </>
-            );
+            body = <PlayerSetup startNewSession={startNewSession} />;
             break;
         case 'session-select':
             body = (
-                <>
-                    <Controls
-                        settings={appState.settings}
-                        setSettings={updateSettings}
-                        setPage={setPage}
-                    />
-                    <SessionSelect
-                        appState={appState}
-                        deleteSession={deleteSession}
-                        setCurrentSession={setCurrentSession}
-                        setPage={setPage}
-                    />
-                </>
+                <SessionSelect
+                    appState={appState}
+                    deleteSession={deleteSession}
+                    setCurrentSession={setCurrentSession}
+                    setPage={setPage}
+                />
             );
             break;
         case 'counter':
             body = (
-                <>
-                    <Controls
-                        settings={appState.settings}
-                        setSettings={updateSettings}
-                        setPage={setPage}
-                        nav={
-                            <Toggle
-                                value={true}
-                                on={
-                                    <IconButton>
-                                        <DataUsageRoundedIcon />
-                                    </IconButton>
-                                }
-                                off={
-                                    <IconButton>
-                                        <HistoryRoundedIcon />
-                                    </IconButton>
-                                }
-                                onToggle={() => setPage('history')}
-                            />
-                        }
-                        actions={
-                            <IconButton onClick={undo}>
-                                <UndoRounded />
-                            </IconButton>
-                        }
-                    />
-                    <Session
-                        data={appState.sessions[currentSession]}
-                        setData={updateSession}
-                        setPage={setPage}
-                    />
-                </>
+                <Session
+                    data={appState.sessions[currentSession]}
+                    setData={updateSession}
+                    setPage={setPage}
+                />
             );
             break;
         case 'history':
             body = (
-                <>
-                    <Controls
-                        settings={appState.settings}
-                        setSettings={updateSettings}
-                        setPage={setPage}
-                        nav={
-                            <Toggle
-                                value={false}
-                                on={
-                                    <IconButton>
-                                        <DataUsageRoundedIcon />
-                                    </IconButton>
-                                }
-                                off={
-                                    <IconButton>
-                                        <HistoryRoundedIcon />
-                                    </IconButton>
-                                }
-                                onToggle={() => setPage('counter')}
-                            />
-                        }
-                        actions={
-                            <IconButton onClick={undo}>
-                                <UndoRounded />
-                            </IconButton>
-                        }
-                    />
-                    <History
-                        data={appState.sessions[currentSession]}
-                        setData={updateSession}
-                        setPage={setPage}
-                    />
-                </>
+                <History
+                    data={appState.sessions[currentSession]}
+                    setData={updateSession}
+                    setPage={setPage}
+                />
             );
             break;
         default:
             body = <h1>?</h1>;
     }
 
-    return <ErrorHandler>{body}</ErrorHandler>;
+    return (
+        <ErrorHandler>
+            <Nav
+                showSettings={showSettings}
+                openCloseSettings={openCloseSettings}
+                setPage={setPage}
+            />
+            {showSettings ? (
+                <Settings settings={appState.settings} setSettings={updateSettings} />
+            ) : (
+                body
+            )}
+        </ErrorHandler>
+    );
 }

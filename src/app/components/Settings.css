@@ -1,0 +1,11 @@
+#settings {
+    max-width: 90vw;
+}
+
+#settings .field {
+    font-size: 4vmin;
+    margin-bottom: 2vmax;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

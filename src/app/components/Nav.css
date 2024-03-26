@@ -1,0 +1,15 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    color: var(--primary-color);
+}
+
+nav .settings {
+    transition: 300ms;
+}
+nav .show.settings {
+    transform: rotate(0deg);
+}
+nav .hide.settings {
+    transform: rotate(180deg);
+}
