@@ -1,6 +1,4 @@
-#history {
-    width: 100%;
-    height: 100%;
+#history .grid {
     padding: 15vmin;
     overflow-y: auto;
 }
@@ -19,6 +17,5 @@
     position: absolute;
     color: currentColor;
     top: 9vmin;
-    right: -1vmin;
     font-size: 3vmin;
 }

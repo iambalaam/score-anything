@@ -3,12 +3,36 @@ import { SessionProps } from './Session';
 import './History.css';
 import { HSL2String } from '../util/color';
 import { toAbsFloorSignedIntString } from '../util/math';
+import { IconButton } from '@mui/material';
+import Undo from '@mui/icons-material/UndoRounded';
+import SessionIcon from '@mui/icons-material/DataUsageRounded';
+import HistoryIcon from '@mui/icons-material/HistoryRounded';
+import { Toggle } from '../components/Toggle';
 
-export function History({ data }: SessionProps) {
+export function History({ data, undo, setPage }: SessionProps) {
     const gridTemplateColumns = Array(data.history[0].length).fill('1fr').join(' ');
 
     return (
         <main id="history">
+            <div className="controls">
+                <IconButton onClick={undo}>
+                    <Undo />
+                </IconButton>
+                <Toggle
+                    value={false}
+                    on={
+                        <IconButton>
+                            <SessionIcon />
+                        </IconButton>
+                    }
+                    off={
+                        <IconButton>
+                            <HistoryIcon />
+                        </IconButton>
+                    }
+                    onToggle={() => setPage('counter')}
+                />
+            </div>
             <div id="grid" style={{ gridTemplateColumns }}>
                 {[...data.history]
                     .map((entry, i) =>
