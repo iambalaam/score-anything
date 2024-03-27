@@ -1,6 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/web-manifest-combined.json",
     "name": "Score Anything",
+    "version": "1.0.0",
     "short_name": "Score Anything",
     "description": "Score Anything",
     "icons": [
@@ -13,5 +14,7 @@
     "start_url": "/score-anything/index.html",
     "display": "fullscreen",
     "theme_color": "indianred",
-    "background_color": "white"
+    "background_color": "white",
+    "permissions": ["clipboardWrite"]
+    
 }

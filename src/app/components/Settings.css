@@ -3,9 +3,14 @@
     margin: 10vmin auto;
 }
 
+#settings fieldset {
+    border-radius: 2vmin;
+    margin: 4vmin 0;
+}
+
 #settings .field {
     font-size: 4vmin;
-    margin-bottom: 2vmax;
+    margin: 2vmin 0 ;
     display: flex;
     justify-content: space-between;
     align-items: center;
