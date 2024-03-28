@@ -69,6 +69,9 @@ export function App() {
         const { orientation } = screen;
         if (settings['screen-orientation-lock'] === 'locked') {
             try {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                }
                 //@ts-ignore
                 orientation.lock(orientation.type).catch(() => {});
             } catch (_) {
@@ -78,6 +81,7 @@ export function App() {
         return () => {
             try {
                 orientation.unlock();
+                document.exitFullscreen();
             } catch (_) {
                 // Do nothing
             }

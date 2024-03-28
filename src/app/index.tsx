@@ -6,7 +6,7 @@ import { attachMetrics } from './metrics';
 attachMetrics();
 
 // register service worker
-navigator?.serviceWorker.register('./sw.js');
+// navigator?.serviceWorker.register('./sw.js');
 
 const domRoot = document.getElementById('root');
 if (domRoot) {
