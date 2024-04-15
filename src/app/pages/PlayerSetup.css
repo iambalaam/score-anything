@@ -13,27 +13,48 @@
 }
 
 #player-setup .player {
+    height: 60px;
     width: 90vmin;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1vmin;
+    font-size: 7vmin;
+    border-radius: 2vmin;
+    overflow: hidden;
+    border: 0.5vmin solid currentColor;
+    background-color: currentColor;
 }
 
 #player-setup .player .color {
-    display: inline-block;
-    height: 1.4em;
-    width: 1.4em;
+    height: 100%;
+    aspect-ratio: 1;
     background-color: currentColor;
-    border-radius: 2vmin 0 0 2vmin;
 }
 #player-setup .player .name {
+    height: 100%;
     min-width: 1px;
     font-size: 1em;
     flex-grow: 1;
-    border-width: 0.5vmin;
-    border-radius: 0 2vmin 2vmin 0;
+    border: none;
+    border-radius: 2vmin;
+    background-color: var(--background-color);
+}
+
+#player-setup .player .start-value {
+    height: 100%;
+    background-color: transparent;
+    color: white;
+    border: none;
+    min-width: 1px;
+    font-size: 1em;
+    border-radius: 2vmin;
+    aspect-ratio: 2;
+    text-align: right;
+}
+#player-setup *::placeholder {
+    color: var(--font-color)
 }
 
 #player-setup .players .count {

@@ -81,10 +81,27 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
         });
     };
 
+    const setPlayerStart = (playerIndex: number, start: number) => {
+        const newCtxs = [...sessionState.counters];
+        const newPlayerCtx = newCtxs[playerIndex];
+        newPlayerCtx.start = start;
+        newCtxs[playerIndex] = newPlayerCtx;
+        setSessionState({
+            ...sessionState,
+            counters: newCtxs
+        });
+    };
+
     const handlePlayerName = (playerIndex: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value;
         setPlayerName(playerIndex, name);
     };
+
+    const handleStartValueChange =
+        (playerIngex: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+            const start = parseInt(e.target.value);
+            setPlayerStart(playerIngex, start);
+        };
 
     const start = () => {
         const newSession: SessionState = {
@@ -114,10 +131,9 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
 
             <div className="players">
                 {sessionState.counters.map((player, index) => (
-                    <div className="player" key={index}>
+                    <div className="player" key={index} style={{ color: HSL2String(player.color) }}>
                         <span
                             className="color"
-                            style={{ color: HSL2String(player.color) }}
                             onClick={() => {
                                 /* Set color */
                             }}
@@ -125,10 +141,16 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
                         <input
                             type="text"
                             className="name"
-                            placeholder={`player ${index + 1}`}
+                            placeholder={`Player ${index + 1}`}
                             value={player.name}
                             onChange={handlePlayerName(index)}
-                            style={{ borderColor: HSL2String(player.color) }}
+                        />
+                        <input
+                            className="start-value"
+                            type="number"
+                            step={1}
+                            onChange={handleStartValueChange(index)}
+                            placeholder="0"
                         />
                     </div>
                 ))}
