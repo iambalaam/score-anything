@@ -20,20 +20,9 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
         name: ''
     });
 
-    const handleSubmit: React.MouseEventHandler = (e) => {
-        e.preventDefault();
-        startNewSession({
-            ...sessionState,
-            name: getGameName(),
-            history: [
-                Array(sessionState.counters.length)
-                    .fill(0)
-                    .map((_, i) => sessionState.counters[i].start)
-            ]
-        });
-    };
+    const defaultGameName = `${sessionState.counters.length} player game`;
+    const defaultPlayerName = (index: number) => `Player ${index + 1}`;
 
-    const getGameName = () => sessionState.name || sessionState.counters.length + ' player game';
     const handleGameNameChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         e.preventDefault();
         const name = e.target.value;
@@ -97,23 +86,29 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
         setPlayerName(playerIndex, name);
     };
 
-    const start = () =>
-        startNewSession({
-            ...sessionState,
-            name: getGameName(),
+    const start = () => {
+        const newSession: SessionState = {
+            name: sessionState.name || defaultGameName,
             history: [
                 Array(sessionState.counters.length)
                     .fill(0)
                     .map((_, i) => sessionState.counters[i].start)
-            ]
+            ],
+            counters: [...sessionState.counters]
+        };
+        newSession.counters.forEach((counter, i) => {
+            counter.name ||= defaultPlayerName(i);
         });
+        startNewSession(newSession);
+    };
 
     return (
         <main id="player-setup">
             <input
                 className="name"
                 type="text"
-                value={getGameName()}
+                value={sessionState.name}
+                placeholder={`${sessionState.counters.length} player game`}
                 onChange={handleGameNameChange}
             />
 
@@ -130,7 +125,8 @@ export function PlayerSetup({ startNewSession }: PlayerSetupProps) {
                         <input
                             type="text"
                             className="name"
-                            value={player.name || `player ${index + 1}`}
+                            placeholder={`player ${index + 1}`}
+                            value={player.name}
                             onChange={handlePlayerName(index)}
                             style={{ borderColor: HSL2String(player.color) }}
                         />
